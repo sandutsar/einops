@@ -1,0 +1,3318 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <link rel="canonical" href="https://arogozhnikov.github.io/einops/2-einops-for-deep-learning/">
+      
+      
+      <link rel="shortcut icon" href="../images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.0">
+    
+    
+      
+        <title>Einops for Deep Learning - Einops</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.bc7e593a.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab28b872.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#einops-tutorial-part-2-deep-learning" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://arogozhnikov.github.io/einops" title="Einops" class="md-header-nav__button md-logo" aria-label="Einops">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M471.1 96C405 96 353.3 137.3 320 174.6 286.7 137.3 235 96 168.9 96 75.8 96 0 167.8 0 256s75.8 160 168.9 160c66.1 0 117.8-41.3 151.1-78.6 33.3 37.3 85 78.6 151.1 78.6 93.1 0 168.9-71.8 168.9-160S564.2 96 471.1 96zM168.9 320c-40.2 0-72.9-28.7-72.9-64s32.7-64 72.9-64c38.2 0 73.4 36.1 94 64-20.4 27.6-55.9 64-94 64zm302.2 0c-38.2 0-73.4-36.1-94-64 20.4-27.6 55.9-64 94-64 40.2 0 72.9 28.7 72.9 64s-32.7 64-72.9 64z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Einops
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Einops for Deep Learning
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/arogozhnikov/einops/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    arogozhnikov/einops
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://arogozhnikov.github.io/einops" title="Einops" class="md-nav__button md-logo" aria-label="Einops">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M471.1 96C405 96 353.3 137.3 320 174.6 286.7 137.3 235 96 168.9 96 75.8 96 0 167.8 0 256s75.8 160 168.9 160c66.1 0 117.8-41.3 151.1-78.6 33.3 37.3 85 78.6 151.1 78.6 93.1 0 168.9-71.8 168.9-160S564.2 96 471.1 96zM168.9 320c-40.2 0-72.9-28.7-72.9-64s32.7-64 72.9-64c38.2 0 73.4 36.1 94 64-20.4 27.6-55.9 64-94 64zm302.2 0c-38.2 0-73.4-36.1-94-64 20.4-27.6 55.9-64 94-64 40.2 0 72.9 28.7 72.9 64s-32.7 64-72.9 64z"/></svg>
+
+    </a>
+    Einops
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/arogozhnikov/einops/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    arogozhnikov/einops
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      Tutorials
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon"></span>
+        Tutorials
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../1-einops-basics/" class="md-nav__link">
+      Einops Basics
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Einops for Deep Learning
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      Einops for Deep Learning
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#whats-in-this-tutorial" class="md-nav__link">
+    What's in this tutorial?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#select-your-flavour" class="md-nav__link">
+    Select your flavour
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simple-computations" class="md-nav__link">
+    Simple computations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worked" class="md-nav__link">
+    Worked!
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backpropagation" class="md-nav__link">
+    Backpropagation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#einopsasnumpy" class="md-nav__link">
+    einops.asnumpy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-building-blocks-of-deep-learning" class="md-nav__link">
+    Common building blocks of deep learning
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reductions" class="md-nav__link">
+    Reductions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1d-2d-and-3d-pooling-are-defined-in-a-similar-way" class="md-nav__link">
+    1d, 2d and 3d pooling are defined in a similar way
+  </a>
+  
+    <nav class="md-nav" aria-label="1d, 2d and 3d pooling are defined in a similar way">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#good-exercises" class="md-nav__link">
+    Good exercises
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#squeeze-and-unsqueeze-expand_dims" class="md-nav__link">
+    Squeeze and unsqueeze (expand_dims)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keepdims-like-behavior-for-reductions" class="md-nav__link">
+    keepdims-like behavior for reductions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stacking" class="md-nav__link">
+    Stacking
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concatenation" class="md-nav__link">
+    Concatenation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shuffling-within-a-dimension" class="md-nav__link">
+    Shuffling within a dimension
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#split-a-dimension" class="md-nav__link">
+    Split a dimension
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-into-the-weeds-of-tensor-packing" class="md-nav__link">
+    Getting into the weeds of tensor packing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shape-parsing" class="md-nav__link">
+    Shape parsing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#striding-anything" class="md-nav__link">
+    Striding anything
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layers" class="md-nav__link">
+    Layers
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../pytorch-examples.html" class="md-nav__link">
+      Pytorch Examples
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      API Reference
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="API Reference" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon"></span>
+        API Reference
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../api/asnumpy/" class="md-nav__link">
+      asnumpy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../api/parse_shape/" class="md-nav__link">
+      parse_shape
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../api/rearrange/" class="md-nav__link">
+      rearrange
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../api/reduce/" class="md-nav__link">
+      reduce
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../api/repeat/" class="md-nav__link">
+      repeat
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#whats-in-this-tutorial" class="md-nav__link">
+    What's in this tutorial?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#select-your-flavour" class="md-nav__link">
+    Select your flavour
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simple-computations" class="md-nav__link">
+    Simple computations
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worked" class="md-nav__link">
+    Worked!
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backpropagation" class="md-nav__link">
+    Backpropagation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#einopsasnumpy" class="md-nav__link">
+    einops.asnumpy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-building-blocks-of-deep-learning" class="md-nav__link">
+    Common building blocks of deep learning
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reductions" class="md-nav__link">
+    Reductions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1d-2d-and-3d-pooling-are-defined-in-a-similar-way" class="md-nav__link">
+    1d, 2d and 3d pooling are defined in a similar way
+  </a>
+  
+    <nav class="md-nav" aria-label="1d, 2d and 3d pooling are defined in a similar way">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#good-exercises" class="md-nav__link">
+    Good exercises
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#squeeze-and-unsqueeze-expand_dims" class="md-nav__link">
+    Squeeze and unsqueeze (expand_dims)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keepdims-like-behavior-for-reductions" class="md-nav__link">
+    keepdims-like behavior for reductions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stacking" class="md-nav__link">
+    Stacking
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concatenation" class="md-nav__link">
+    Concatenation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shuffling-within-a-dimension" class="md-nav__link">
+    Shuffling within a dimension
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#split-a-dimension" class="md-nav__link">
+    Split a dimension
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-into-the-weeds-of-tensor-packing" class="md-nav__link">
+    Getting into the weeds of tensor packing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shape-parsing" class="md-nav__link">
+    Shape parsing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#striding-anything" class="md-nav__link">
+    Striding anything
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layers" class="md-nav__link">
+    Layers
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/arogozhnikov/einops/edit/master/docs/2-einops-for-deep-learning.ipynb" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                
+<div class="notebook-content">
+<style type="text/css">/*!
+*
+* IPython notebook
+*
+*/
+/* CSS font colors for translated ANSI escape sequences */
+/* The color values are a mix of
+   http://www.xcolors.net/dl/baskerville-ivorylight and
+   http://www.xcolors.net/dl/euphrasia */
+.ansi-black-fg {
+  color: #3E424D;
+}
+.ansi-black-bg {
+  background-color: #3E424D;
+}
+.ansi-black-intense-fg {
+  color: #282C36;
+}
+.ansi-black-intense-bg {
+  background-color: #282C36;
+}
+.ansi-red-fg {
+  color: #E75C58;
+}
+.ansi-red-bg {
+  background-color: #E75C58;
+}
+.ansi-red-intense-fg {
+  color: #B22B31;
+}
+.ansi-red-intense-bg {
+  background-color: #B22B31;
+}
+.ansi-green-fg {
+  color: #00A250;
+}
+.ansi-green-bg {
+  background-color: #00A250;
+}
+.ansi-green-intense-fg {
+  color: #007427;
+}
+.ansi-green-intense-bg {
+  background-color: #007427;
+}
+.ansi-yellow-fg {
+  color: #DDB62B;
+}
+.ansi-yellow-bg {
+  background-color: #DDB62B;
+}
+.ansi-yellow-intense-fg {
+  color: #B27D12;
+}
+.ansi-yellow-intense-bg {
+  background-color: #B27D12;
+}
+.ansi-blue-fg {
+  color: #208FFB;
+}
+.ansi-blue-bg {
+  background-color: #208FFB;
+}
+.ansi-blue-intense-fg {
+  color: #0065CA;
+}
+.ansi-blue-intense-bg {
+  background-color: #0065CA;
+}
+.ansi-magenta-fg {
+  color: #D160C4;
+}
+.ansi-magenta-bg {
+  background-color: #D160C4;
+}
+.ansi-magenta-intense-fg {
+  color: #A03196;
+}
+.ansi-magenta-intense-bg {
+  background-color: #A03196;
+}
+.ansi-cyan-fg {
+  color: #60C6C8;
+}
+.ansi-cyan-bg {
+  background-color: #60C6C8;
+}
+.ansi-cyan-intense-fg {
+  color: #258F8F;
+}
+.ansi-cyan-intense-bg {
+  background-color: #258F8F;
+}
+.ansi-white-fg {
+  color: #C5C1B4;
+}
+.ansi-white-bg {
+  background-color: #C5C1B4;
+}
+.ansi-white-intense-fg {
+  color: #A1A6B2;
+}
+.ansi-white-intense-bg {
+  background-color: #A1A6B2;
+}
+.ansi-default-inverse-fg {
+  color: #FFFFFF;
+}
+.ansi-default-inverse-bg {
+  background-color: #000000;
+}
+.ansi-bold {
+  font-weight: bold;
+}
+.ansi-underline {
+  text-decoration: underline;
+}
+/* The following styles are deprecated an will be removed in a future version */
+.ansibold {
+  font-weight: bold;
+}
+.ansi-inverse {
+  outline: 0.5px dotted;
+}
+/* use dark versions for foreground, to improve visibility */
+.ansiblack {
+  color: black;
+}
+.ansired {
+  color: darkred;
+}
+.ansigreen {
+  color: darkgreen;
+}
+.ansiyellow {
+  color: #c4a000;
+}
+.ansiblue {
+  color: darkblue;
+}
+.ansipurple {
+  color: darkviolet;
+}
+.ansicyan {
+  color: steelblue;
+}
+.ansigray {
+  color: gray;
+}
+/* and light for background, for the same reason */
+.ansibgblack {
+  background-color: black;
+}
+.ansibgred {
+  background-color: red;
+}
+.ansibggreen {
+  background-color: green;
+}
+.ansibgyellow {
+  background-color: yellow;
+}
+.ansibgblue {
+  background-color: blue;
+}
+.ansibgpurple {
+  background-color: magenta;
+}
+.ansibgcyan {
+  background-color: cyan;
+}
+.ansibggray {
+  background-color: gray;
+}
+div.cell {
+  /* Old browsers */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-align: stretch;
+  display: box;
+  box-orient: vertical;
+  box-align: stretch;
+  /* Modern browsers */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border-radius: 2px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  width: 100%;
+  padding: 5px;
+  /* This acts as a spacer between cells, that is outside the border */
+  margin: 0px;
+  outline: none;
+  position: relative;
+  overflow: visible;
+}
+div.cell:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: transparent;
+}
+div.cell.jupyter-soft-selected {
+  border-left-color: #E3F2FD;
+  border-left-width: 1px;
+  padding-left: 5px;
+  border-right-color: #E3F2FD;
+  border-right-width: 1px;
+  background: #E3F2FD;
+}
+@media print {
+  div.cell.jupyter-soft-selected {
+    border-color: transparent;
+  }
+}
+div.cell.selected,
+div.cell.selected.jupyter-soft-selected {
+  border-color: #ababab;
+}
+div.cell.selected:before,
+div.cell.selected.jupyter-soft-selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #42A5F5;
+}
+@media print {
+  div.cell.selected,
+  div.cell.selected.jupyter-soft-selected {
+    border-color: transparent;
+  }
+}
+.edit_mode div.cell.selected {
+  border-color: #66BB6A;
+}
+.edit_mode div.cell.selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #66BB6A;
+}
+@media print {
+  .edit_mode div.cell.selected {
+    border-color: transparent;
+  }
+}
+.prompt {
+  /* This needs to be wide enough for 3 digit prompt numbers: In[100]: */
+  min-width: 14ex;
+  /* This padding is tuned to match the padding on the CodeMirror editor. */
+  padding: 0.4em;
+  margin: 0px;
+  font-family: monospace;
+  text-align: right;
+  /* This has to match that of the the CodeMirror class line-height below */
+  line-height: 1.21429em;
+  /* Don't highlight prompt number selection */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* Use default cursor */
+  cursor: default;
+}
+@media (max-width: 540px) {
+  .prompt {
+    text-align: left;
+  }
+}
+div.inner_cell {
+  min-width: 0;
+  /* Old browsers */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-align: stretch;
+  display: box;
+  box-orient: vertical;
+  box-align: stretch;
+  /* Modern browsers */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  /* Old browsers */
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  box-flex: 1;
+  /* Modern browsers */
+  flex: 1;
+}
+/* input_area and input_prompt must match in top border and margin for alignment */
+div.input_area {
+  border: 1px solid #cfcfcf;
+  border-radius: 2px;
+  background: #f7f7f7;
+  line-height: 1.21429em;
+}
+/* This is needed so that empty prompt areas can collapse to zero height when there
+   is no content in the output_subarea and the prompt. The main purpose of this is
+   to make sure that empty JavaScript output_subareas have no height. */
+div.prompt:empty {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+div.unrecognized_cell {
+  padding: 5px 5px 5px 0px;
+  /* Old browsers */
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-align: stretch;
+  display: box;
+  box-orient: horizontal;
+  box-align: stretch;
+  /* Modern browsers */
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+div.unrecognized_cell .inner_cell {
+  border-radius: 2px;
+  padding: 5px;
+  font-weight: bold;
+  color: red;
+  border: 1px solid #cfcfcf;
+  background: #eaeaea;
+}
+div.unrecognized_cell .inner_cell a {
+  color: inherit;
+  text-decoration: none;
+}
+div.unrecognized_cell .inner_cell a:hover {
+  color: inherit;
+  text-decoration: none;
+}
+@media (max-width: 540px) {
+  div.unrecognized_cell > div.prompt {
+    display: none;
+  }
+}
+div.code_cell {
+  /* avoid page breaking on code cells when printing */
+}
+@media print {
+  div.code_cell {
+    page-break-inside: avoid;
+  }
+}
+/* any special styling for code cells that are currently running goes here */
+div.input {
+  page-break-inside: avoid;
+  /* Old browsers */
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-align: stretch;
+  display: box;
+  box-orient: horizontal;
+  box-align: stretch;
+  /* Modern browsers */
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+@media (max-width: 540px) {
+  div.input {
+    /* Old browsers */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-box-align: stretch;
+    display: -moz-box;
+    -moz-box-orient: vertical;
+    -moz-box-align: stretch;
+    display: box;
+    box-orient: vertical;
+    box-align: stretch;
+    /* Modern browsers */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+/* input_area and input_prompt must match in top border and margin for alignment */
+div.input_prompt {
+  color: #303F9F;
+  border-top: 1px solid transparent;
+}
+div.input_area > div.highlight {
+  margin: 0.4em;
+  border: none;
+  padding: 0px;
+  background-color: transparent;
+}
+div.input_area > div.highlight > pre {
+  margin: 0px;
+  border: none;
+  padding: 0px;
+  background-color: transparent;
+}
+/* The following gets added to the <head> if it is detected that the user has a
+ * monospace font with inconsistent normal/bold/italic height.  See
+ * notebookmain.js.  Such fonts will have keywords vertically offset with
+ * respect to the rest of the text.  The user should select a better font.
+ * See: https://github.com/ipython/ipython/issues/1503
+ *
+ * .CodeMirror span {
+ *      vertical-align: bottom;
+ * }
+ */
+.CodeMirror {
+  line-height: 1.21429em;
+  /* Changed from 1em to our global default */
+  font-size: 14px;
+  height: auto;
+  /* Changed to auto to autogrow */
+  background: none;
+  /* Changed from white to allow our bg to show through */
+}
+.CodeMirror-scroll {
+  /*  The CodeMirror docs are a bit fuzzy on if overflow-y should be hidden or visible.*/
+  /*  We have found that if it is visible, vertical scrollbars appear with font size changes.*/
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+.CodeMirror-lines {
+  /* In CM2, this used to be 0.4em, but in CM3 it went to 4px. We need the em value because */
+  /* we have set a different line-height and want this to scale with that. */
+  /* Note that this should set vertical padding only, since CodeMirror assumes
+       that horizontal padding will be set on CodeMirror pre */
+  padding: 0.4em 0;
+}
+.CodeMirror-linenumber {
+  padding: 0 8px 0 4px;
+}
+.CodeMirror-gutters {
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+}
+.CodeMirror pre {
+  /* In CM3 this went to 4px from 0 in CM2. This sets horizontal padding only,
+    use .CodeMirror-lines for vertical */
+  padding: 0 0.4em;
+  border: 0;
+  border-radius: 0;
+}
+.CodeMirror-cursor {
+  border-left: 1.4px solid black;
+}
+@media screen and (min-width: 2138px) and (max-width: 4319px) {
+  .CodeMirror-cursor {
+    border-left: 2px solid black;
+  }
+}
+@media screen and (min-width: 4320px) {
+  .CodeMirror-cursor {
+    border-left: 4px solid black;
+  }
+}
+/*
+
+Original style from softwaremaniacs.org (c) Ivan Sagalaev <Maniac@SoftwareManiacs.Org>
+Adapted from GitHub theme
+
+*/
+.highlight-base {
+  color: #000;
+}
+.highlight-variable {
+  color: #000;
+}
+.highlight-variable-2 {
+  color: #1a1a1a;
+}
+.highlight-variable-3 {
+  color: #333333;
+}
+.highlight-string {
+  color: #BA2121;
+}
+.highlight-comment {
+  color: #408080;
+  font-style: italic;
+}
+.highlight-number {
+  color: #080;
+}
+.highlight-atom {
+  color: #88F;
+}
+.highlight-keyword {
+  color: #008000;
+  font-weight: bold;
+}
+.highlight-builtin {
+  color: #008000;
+}
+.highlight-error {
+  color: #f00;
+}
+.highlight-operator {
+  color: #AA22FF;
+  font-weight: bold;
+}
+.highlight-meta {
+  color: #AA22FF;
+}
+/* previously not defined, copying from default codemirror */
+.highlight-def {
+  color: #00f;
+}
+.highlight-string-2 {
+  color: #f50;
+}
+.highlight-qualifier {
+  color: #555;
+}
+.highlight-bracket {
+  color: #997;
+}
+.highlight-tag {
+  color: #170;
+}
+.highlight-attribute {
+  color: #00c;
+}
+.highlight-header {
+  color: blue;
+}
+.highlight-quote {
+  color: #090;
+}
+.highlight-link {
+  color: #00c;
+}
+/* apply the same style to codemirror */
+.cm-s-ipython span.cm-keyword {
+  color: #008000;
+  font-weight: bold;
+}
+.cm-s-ipython span.cm-atom {
+  color: #88F;
+}
+.cm-s-ipython span.cm-number {
+  color: #080;
+}
+.cm-s-ipython span.cm-def {
+  color: #00f;
+}
+.cm-s-ipython span.cm-variable {
+  color: #000;
+}
+.cm-s-ipython span.cm-operator {
+  color: #AA22FF;
+  font-weight: bold;
+}
+.cm-s-ipython span.cm-variable-2 {
+  color: #1a1a1a;
+}
+.cm-s-ipython span.cm-variable-3 {
+  color: #333333;
+}
+.cm-s-ipython span.cm-comment {
+  color: #408080;
+  font-style: italic;
+}
+.cm-s-ipython span.cm-string {
+  color: #BA2121;
+}
+.cm-s-ipython span.cm-string-2 {
+  color: #f50;
+}
+.cm-s-ipython span.cm-meta {
+  color: #AA22FF;
+}
+.cm-s-ipython span.cm-qualifier {
+  color: #555;
+}
+.cm-s-ipython span.cm-builtin {
+  color: #008000;
+}
+.cm-s-ipython span.cm-bracket {
+  color: #997;
+}
+.cm-s-ipython span.cm-tag {
+  color: #170;
+}
+.cm-s-ipython span.cm-attribute {
+  color: #00c;
+}
+.cm-s-ipython span.cm-header {
+  color: blue;
+}
+.cm-s-ipython span.cm-quote {
+  color: #090;
+}
+.cm-s-ipython span.cm-link {
+  color: #00c;
+}
+.cm-s-ipython span.cm-error {
+  color: #f00;
+}
+.cm-s-ipython span.cm-tab {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
+  background-position: right;
+  background-repeat: no-repeat;
+}
+div.output_wrapper {
+  /* this position must be relative to enable descendents to be absolute within it */
+  position: relative;
+  /* Old browsers */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-align: stretch;
+  display: box;
+  box-orient: vertical;
+  box-align: stretch;
+  /* Modern browsers */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  z-index: 1;
+}
+/* class for the output area when it should be height-limited */
+div.output_scroll {
+  /* ideally, this would be max-height, but FF barfs all over that */
+  height: 24em;
+  /* FF needs this *and the wrapper* to specify full width, or it will shrinkwrap */
+  width: 100%;
+  overflow: auto;
+  border-radius: 2px;
+  -webkit-box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+  display: block;
+}
+/* output div while it is collapsed */
+div.output_collapsed {
+  margin: 0px;
+  padding: 0px;
+  /* Old browsers */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-align: stretch;
+  display: box;
+  box-orient: vertical;
+  box-align: stretch;
+  /* Modern browsers */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+div.out_prompt_overlay {
+  height: 100%;
+  padding: 0px 0.4em;
+  position: absolute;
+  border-radius: 2px;
+}
+div.out_prompt_overlay:hover {
+  /* use inner shadow to get border that is computed the same on WebKit/FF */
+  -webkit-box-shadow: inset 0 0 1px #000;
+  box-shadow: inset 0 0 1px #000;
+  background: rgba(240, 240, 240, 0.5);
+}
+div.output_prompt {
+  color: #D84315;
+}
+/* This class is the outer container of all output sections. */
+div.output_area {
+  padding: 0px;
+  page-break-inside: avoid;
+  /* Old browsers */
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-align: stretch;
+  display: box;
+  box-orient: horizontal;
+  box-align: stretch;
+  /* Modern browsers */
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+div.output_area .MathJax_Display {
+  text-align: left !important;
+}
+div.output_area 
+div.output_area 
+div.output_area img,
+div.output_area svg {
+  max-width: 100%;
+  height: auto;
+}
+div.output_area img.unconfined,
+div.output_area svg.unconfined {
+  max-width: none;
+}
+div.output_area .mglyph > img {
+  max-width: none;
+}
+/* This is needed to protect the pre formating from global settings such
+   as that of bootstrap */
+.output {
+  /* Old browsers */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-box-align: stretch;
+  display: box;
+  box-orient: vertical;
+  box-align: stretch;
+  /* Modern browsers */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+@media (max-width: 540px) {
+  div.output_area {
+    /* Old browsers */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-box-align: stretch;
+    display: -moz-box;
+    -moz-box-orient: vertical;
+    -moz-box-align: stretch;
+    display: box;
+    box-orient: vertical;
+    box-align: stretch;
+    /* Modern browsers */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+div.output_area pre {
+  margin: 0;
+  padding: 1px 0 1px 0;
+  border: 0;
+  vertical-align: baseline;
+  color: black;
+  background-color: transparent;
+  border-radius: 0;
+}
+/* This class is for the output subarea inside the output_area and after
+   the prompt div. */
+div.output_subarea {
+  overflow-x: auto;
+  padding: 0.4em;
+  /* Old browsers */
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  box-flex: 1;
+  /* Modern browsers */
+  flex: 1;
+  max-width: calc(100% - 14ex);
+}
+div.output_scroll div.output_subarea {
+  overflow-x: visible;
+}
+/* The rest of the output_* classes are for special styling of the different
+   output types */
+/* all text output has this class: */
+div.output_text {
+  text-align: left;
+  color: #000;
+  /* This has to match that of the the CodeMirror class line-height below */
+  line-height: 1.21429em;
+}
+/* stdout/stderr are 'text' as well as 'stream', but execute_result/error are *not* streams */
+div.output_stderr {
+  background: #fdd;
+  /* very light red background for stderr */
+}
+div.output_latex {
+  text-align: left;
+}
+/* Empty output_javascript divs should have no height */
+div.output_javascript:empty {
+  padding: 0;
+}
+.js-error {
+  color: darkred;
+}
+/* raw_input styles */
+div.raw_input_container {
+  line-height: 1.21429em;
+  padding-top: 5px;
+}
+pre.raw_input_prompt {
+  /* nothing needed here. */
+}
+input.raw_input {
+  font-family: monospace;
+  font-size: inherit;
+  color: inherit;
+  width: auto;
+  /* make sure input baseline aligns with prompt */
+  vertical-align: baseline;
+  /* padding + margin = 0.5em between prompt and cursor */
+  padding: 0em 0.25em;
+  margin: 0em 0.25em;
+}
+input.raw_input:focus {
+  box-shadow: none;
+}
+p.p-space {
+  margin-bottom: 10px;
+}
+div.output_unrecognized {
+  padding: 5px;
+  font-weight: bold;
+  color: red;
+}
+div.output_unrecognized a {
+  color: inherit;
+  text-decoration: none;
+}
+div.output_unrecognized a:hover {
+  color: inherit;
+  text-decoration: none;
+}
+.rendered_html {
+  color: #000;
+  /* any extras will just be numbers: */
+}
+
+
+
+.rendered_html :link {
+  text-decoration: underline;
+}
+.rendered_html :visited {
+  text-decoration: underline;
+}
+
+
+
+
+
+
+.rendered_html h1:first-child {
+  margin-top: 0.538em;
+}
+.rendered_html h2:first-child {
+  margin-top: 0.636em;
+}
+.rendered_html h3:first-child {
+  margin-top: 0.777em;
+}
+.rendered_html h4:first-child {
+  margin-top: 1em;
+}
+.rendered_html h5:first-child {
+  margin-top: 1em;
+}
+.rendered_html h6:first-child {
+  margin-top: 1em;
+}
+.rendered_html ul:not(.list-inline),
+.rendered_html ol:not(.list-inline) {
+  padding-left: 2em;
+}
+
+
+
+
+
+
+
+
+.rendered_html * + ul {
+  margin-top: 1em;
+}
+.rendered_html * + ol {
+  margin-top: 1em;
+}
+
+
+
+
+
+.rendered_html pre,
+
+
+
+
+.rendered_html tr,
+.rendered_html th,
+
+
+.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+.rendered_html * + table {
+  margin-top: 1em;
+}
+
+.rendered_html * + p {
+  margin-top: 1em;
+}
+
+.rendered_html * + img {
+  margin-top: 1em;
+}
+.rendered_html img,
+
+.rendered_html img.unconfined,
+
+
+.rendered_html * + .alert {
+  margin-top: 1em;
+}
+[dir="rtl"] 
+div.text_cell {
+  /* Old browsers */
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-align: stretch;
+  display: -moz-box;
+  -moz-box-orient: horizontal;
+  -moz-box-align: stretch;
+  display: box;
+  box-orient: horizontal;
+  box-align: stretch;
+  /* Modern browsers */
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+@media (max-width: 540px) {
+  div.text_cell > div.prompt {
+    display: none;
+  }
+}
+div.text_cell_render {
+  /*font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;*/
+  outline: none;
+  resize: none;
+  width: inherit;
+  border-style: none;
+  padding: 0.5em 0.5em 0.5em 0.4em;
+  color: #000;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+a.anchor-link:link {
+  text-decoration: none;
+  padding: 0px 20px;
+  visibility: hidden;
+}
+h1:hover .anchor-link,
+h2:hover .anchor-link,
+h3:hover .anchor-link,
+h4:hover .anchor-link,
+h5:hover .anchor-link,
+h6:hover .anchor-link {
+  visibility: visible;
+}
+.text_cell.rendered .input_area {
+  display: none;
+}
+.text_cell.rendered 
+.text_cell.rendered .rendered_html tr,
+.text_cell.rendered .rendered_html th,
+.text_cell.rendered 
+.text_cell.unrendered .text_cell_render {
+  display: none;
+}
+.text_cell .dropzone .input_area {
+  border: 2px dashed #bababa;
+  margin: -1px;
+}
+.cm-header-1,
+.cm-header-2,
+.cm-header-3,
+.cm-header-4,
+.cm-header-5,
+.cm-header-6 {
+  font-weight: bold;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.cm-header-1 {
+  font-size: 185.7%;
+}
+.cm-header-2 {
+  font-size: 157.1%;
+}
+.cm-header-3 {
+  font-size: 128.6%;
+}
+.cm-header-4 {
+  font-size: 110%;
+}
+.cm-header-5 {
+  font-size: 100%;
+  font-style: italic;
+}
+.cm-header-6 {
+  font-size: 100%;
+  font-style: italic;
+}
+</style>
+<style type="text/css">.highlight-ipynb .hll { background-color: #ffffcc }
+.highlight-ipynb  { background: #f8f8f8; }
+.highlight-ipynb .c { color: #408080; font-style: italic } /* Comment */
+.highlight-ipynb .err { border: 1px solid #FF0000 } /* Error */
+.highlight-ipynb .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight-ipynb .o { color: #666666 } /* Operator */
+.highlight-ipynb .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+.highlight-ipynb .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.highlight-ipynb .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight-ipynb .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+.highlight-ipynb .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.highlight-ipynb .cs { color: #408080; font-style: italic } /* Comment.Special */
+.highlight-ipynb .gd { color: #A00000 } /* Generic.Deleted */
+.highlight-ipynb .ge { font-style: italic } /* Generic.Emph */
+.highlight-ipynb .gr { color: #FF0000 } /* Generic.Error */
+.highlight-ipynb .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight-ipynb .gi { color: #00A000 } /* Generic.Inserted */
+.highlight-ipynb .go { color: #888888 } /* Generic.Output */
+.highlight-ipynb .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight-ipynb .gs { font-weight: bold } /* Generic.Strong */
+.highlight-ipynb .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight-ipynb .gt { color: #0044DD } /* Generic.Traceback */
+.highlight-ipynb .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight-ipynb .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight-ipynb .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight-ipynb .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight-ipynb .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight-ipynb .kt { color: #B00040 } /* Keyword.Type */
+.highlight-ipynb .m { color: #666666 } /* Literal.Number */
+.highlight-ipynb .s { color: #BA2121 } /* Literal.String */
+.highlight-ipynb .na { color: #7D9029 } /* Name.Attribute */
+.highlight-ipynb .nb { color: #008000 } /* Name.Builtin */
+.highlight-ipynb .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.highlight-ipynb .no { color: #880000 } /* Name.Constant */
+.highlight-ipynb .nd { color: #AA22FF } /* Name.Decorator */
+.highlight-ipynb .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.highlight-ipynb .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.highlight-ipynb .nf { color: #0000FF } /* Name.Function */
+.highlight-ipynb .nl { color: #A0A000 } /* Name.Label */
+.highlight-ipynb .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.highlight-ipynb .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight-ipynb .nv { color: #19177C } /* Name.Variable */
+.highlight-ipynb .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.highlight-ipynb .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight-ipynb .mb { color: #666666 } /* Literal.Number.Bin */
+.highlight-ipynb .mf { color: #666666 } /* Literal.Number.Float */
+.highlight-ipynb .mh { color: #666666 } /* Literal.Number.Hex */
+.highlight-ipynb .mi { color: #666666 } /* Literal.Number.Integer */
+.highlight-ipynb .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight-ipynb .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight-ipynb .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight-ipynb .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight-ipynb .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight-ipynb .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight-ipynb .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight-ipynb .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.highlight-ipynb .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight-ipynb .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.highlight-ipynb .sx { color: #008000 } /* Literal.String.Other */
+.highlight-ipynb .sr { color: #BB6688 } /* Literal.String.Regex */
+.highlight-ipynb .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight-ipynb .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight-ipynb .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight-ipynb .fm { color: #0000FF } /* Name.Function.Magic */
+.highlight-ipynb .vc { color: #19177C } /* Name.Variable.Class */
+.highlight-ipynb .vg { color: #19177C } /* Name.Variable.Global */
+.highlight-ipynb .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight-ipynb .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight-ipynb .il { color: #666666 } /* Literal.Number.Integer.Long */</style><style type="text/css">
+    .rendered_html a{text-decoration:inherit !important}.rendered_html :link{text-decoration:inherit !important}.rendered_html :visited{text-decoration:inherit !important}pre code{background-color:inherit !important}.highlight{color:#000000}.highlight code{color:#000000}.highlight .n{color:#333333}.highlight .p{color:#000000}.text_cell .prompt{display:none !important}div.input_prompt{padding:0.2em 0.4em}div.output_prompt{padding:0.4em}.text_cell{margin:0 !important;padding:0 !important;border:none !important}.text_cell_render{margin:0 !important;padding:0 !important;border:none !important}.rendered_html *+p{margin-top:inherit !important}.anchor-link{display:none !important}.code_cell{margin:0 !important;padding:5px 0 !important;border:none !important}.celltoolbar{border:thin solid #CFCFCF;border-bottom:none;background:#EEE;border-radius:2px 2px 0px 0px;width:100%;height:29px;padding-right:4px;box-orient:horizontal;box-align:stretch;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-ms-flex-direction:row;flex-direction:row;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;box-pack:end;-webkit-box-pack:start;-ms-flex-pack:start;justify-content:flex-start;display:-webkit-flex}.celltoolbar .tags_button_container{display:-webkit-box;display:-ms-flexbox;display:flex}.celltoolbar .tags_button_container .tag-container{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-ms-flex-direction:row;flex-direction:row;-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1;overflow:hidden;position:relative}.celltoolbar .tags_button_container .tag-container .cell-tag{background-color:#fff;white-space:nowrap;margin:3px 4px;padding:0 4px;border-radius:1px;border:1px solid #ccc;-webkit-box-shadow:none;box-shadow:none;width:inherit;font-size:13px;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;height:22px;line-height:22px;display:inline-block}div.input_area>div.highlight{margin:0.25em 0.4em !important}.code_cell pre{font-size:12px !important}.output_html table.dataframe{font-family:Arial, sans-serif;font-size:13px;line-height:20px}.output_html table.dataframe th,td{padding:4px;text-align:left}.bk-plot-wrapper tbody tr{background:none !important}.bk-plot-wrapper tbody tr:hover{background:none !important}
+/*# sourceMappingURL=jupyter-fixes.min.css.map */
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+
+<!-- Loading mathjax macro -->
+<!-- Load mathjax -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML"></script>
+    <!-- MathJax configuration -->
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true,
+            processEnvironments: true
+        },
+        // Center justify equations in code and markdown cells. Elsewhere
+        // we use CSS to left justify single line equations in code cells.
+        displayAlign: 'center',
+        "HTML-CSS": {
+            styles: {'.MathJax_Display': {"margin": 0}},
+            linebreaks: { automatic: true }
+        }
+    });
+    </script>
+    <!-- End of mathjax configuration -->
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="einops-tutorial-part-2-deep-learning">Einops tutorial, part 2: deep learning<a class="anchor-link" href="#Einops-tutorial,-part-2:-deep-learning">&#182;</a></h1><p><a href="https://github.com/arogozhnikov/einops/tree/master/docs">Previous part of tutorial</a> provides visual examples with numpy.</p>
+<h2 id="whats-in-this-tutorial">What's in this tutorial?<a class="anchor-link" href="#What's-in-this-tutorial?">&#182;</a></h2><ul>
+<li>working with deep learning packages</li>
+<li>important cases for deep learning models</li>
+<li><code>einsops.asnumpy</code> and <code>einops.layers</code></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">einops</span> <span class="kn">import</span> <span class="n">rearrange</span><span class="p">,</span> <span class="n">reduce</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># utility to hide answers</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">guess</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="select-your-flavour">Select your flavour<a class="anchor-link" href="#Select-your-flavour">&#182;</a></h2><p>Switch to the framework you're most comfortable with.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># select one from &#39;chainer&#39;, &#39;gluon&#39;, &#39;tensorflow&#39;, &#39;pytorch&#39; </span>
+<span class="n">flavour</span> <span class="o">=</span> <span class="s1">&#39;pytorch&#39;</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;selected </span><span class="si">{}</span><span class="s1"> backend&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flavour</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">enable_eager_execution</span><span class="p">()</span>
+    <span class="n">tape</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">(</span><span class="n">persistent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">tape</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">eager</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span>
+<span class="k">elif</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s1">&#39;pytorch&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">torch</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">elif</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s1">&#39;chainer&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">chainer</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">chainer</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s1">&#39;gluon&#39;</span>
+    <span class="kn">import</span> <span class="nn">mxnet</span> <span class="k">as</span> <span class="nn">mx</span>
+    <span class="n">mx</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">set_recording</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">attach_grad</span><span class="p">()</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>selected pytorch backend
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Tensor, torch.Size([10, 32, 100, 200]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="simple-computations">Simple computations<a class="anchor-link" href="#Simple-computations">&#182;</a></h2><ul>
+<li>converting bchw to bhwc format and back is a common operation in CV</li>
+<li>try to predict output shape and then check your guess!</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; b h w c&#39;</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 100, 200, 32)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="worked">Worked!<a class="anchor-link" href="#Worked!">&#182;</a></h2><p>Did you notice? Code above worked for you backend of choice. <br />
+Einops functions work with any tensor like they are native to the framework.</p>
+<h2 id="backpropagation">Backpropagation<a class="anchor-link" href="#Backpropagation">&#182;</a></h2><ul>
+<li>gradients are a corner stone of deep learning</li>
+<li>You can back-propagate through einops operations (just as with framework native operations)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">y0</span> <span class="o">=</span> <span class="n">x</span>
+<span class="n">y1</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; b c&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">)</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="s1">&#39;b c -&gt; c b&#39;</span><span class="p">)</span>
+<span class="n">y3</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">y2</span><span class="p">,</span> <span class="s1">&#39;c b -&gt; &#39;</span><span class="p">,</span> <span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">y3</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="s1">&#39;b c h w -&gt; &#39;</span><span class="p">,</span> <span class="s1">&#39;sum&#39;</span><span class="p">))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">y3</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">grad</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; &#39;</span><span class="p">,</span> <span class="s1">&#39;sum&#39;</span><span class="p">))</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>tensor(320., dtype=torch.float64)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="einopsasnumpy"><code>einops.asnumpy</code><a class="anchor-link" href="#einops.asnumpy">&#182;</a></h2><p>Converts tensors to numpy</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">einops</span> <span class="kn">import</span> <span class="n">asnumpy</span>
+<span class="n">y3_numpy</span> <span class="o">=</span> <span class="n">asnumpy</span><span class="p">(</span><span class="n">y3</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">y3_numpy</span><span class="p">),</span> <span class="n">y3_numpy</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class &#39;numpy.ndarray&#39;&gt; ()
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="common-building-blocks-of-deep-learning">Common building blocks of deep learning<a class="anchor-link" href="#Common-building-blocks-of-deep-learning">&#182;</a></h2><p>Let's run though some familiar operations and check how those can be written with <code>einops</code></p>
+<p><strong>Flattening</strong> is common operation, frequently appears at the boundary
+between convolutional layers and fully connected layers</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; b (c h w)&#39;</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 640000)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>space-to-depth</strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c (h h1) (w w1) -&gt; b (h1 w1 c) h w&#39;</span><span class="p">,</span> <span class="n">h1</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w1</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 128, 50, 100)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>depth-to-space</strong> (notice that it's reverse of the previous)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b (c h1 w1) h w -&gt; b c (h h1) (w w1)&#39;</span><span class="p">,</span> <span class="n">h1</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w1</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 8, 200, 400)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="reductions">Reductions<a class="anchor-link" href="#Reductions">&#182;</a></h2><p>Simple <strong>global average pooling</strong>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; b c&#39;</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>max-pooling</strong> with a kernel 2x2</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c (h h1) (w w1) -&gt; b c h w&#39;</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">h1</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w1</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32, 50, 100)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1d-2d-and-3d-pooling-are-defined-in-a-similar-way">1d, 2d and 3d pooling are defined in a similar way<a class="anchor-link" href="#1d,-2d-and-3d-pooling-are-defined-in-a-similar-way">&#182;</a></h2><p>for sequential 1-d models, you'll probably want pooling over time</p>
+<div class="highlight"><pre><span></span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;(t t2) b c -&gt; t b c&#39;</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">t2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<p>for volumetric models, all three dimensions are pooled</p>
+<div class="highlight"><pre><span></span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c (x x2) (y y2) (z z2) -&gt; b c x y z&#39;</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">z2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<p>Uniformity is a strong point of <code>einops</code>, and you don't need specific operation for each particular case.</p>
+<h3 id="good-exercises">Good exercises<a class="anchor-link" href="#Good-exercises">&#182;</a></h3><ul>
+<li>write a version of space-to-depth for 1d and 3d (2d is provided above)</li>
+<li>write an average / max pooling for 1d models. </li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="squeeze-and-unsqueeze-expand_dims">Squeeze and unsqueeze (expand_dims)<a class="anchor-link" href="#Squeeze-and-unsqueeze-(expand_dims)">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># models typically work only with batches, </span>
+<span class="c1"># so to predict a single image ...</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;c h w -&gt; h w c&#39;</span><span class="p">)</span>
+<span class="c1"># ... create a dummy 1-element axis ...</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s1">&#39;h w c -&gt; () c h w&#39;</span><span class="p">)</span>
+<span class="c1"># ... imagine you predicted this with a convolutional network for classification, we&#39;ll just flatten axes ...</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; b (c h w)&#39;</span><span class="p">)</span>
+<span class="c1"># ... finally, decompose (remove) dummy axis</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="s1">&#39;() class -&gt; class&#39;</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/axelr/projects/einops/einops/parsing.py:136: RuntimeWarning: It is discouraged to use axes names that are keywords: class
+  warnings.warn(&#34;It is discouraged to use axes names that are keywords: {}&#34;.format(name), RuntimeWarning)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="keepdims-like-behavior-for-reductions">keepdims-like behavior for reductions<a class="anchor-link" href="#keepdims-like-behavior-for-reductions">&#182;</a></h2><ul>
+<li>empty composition <code>()</code> provides dimensions of length 1, which are broadcastable.</li>
+<li>alternatively, you can use just <code>1</code> to introduce new axis, that's a synonym to <code>()</code></li>
+</ul>
+<p>per-channel mean-normalization for <em>each image</em>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; b c 1 1&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32, 100, 200)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>per-channel mean-normalization for <em>whole batch</em>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">reduce</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; 1 c 1 1&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32, 100, 200)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="stacking">Stacking<a class="anchor-link" href="#Stacking">&#182;</a></h2><p>let's take a list of tensors</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">list_of_tensors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>New axis (one that enumerates tensors) appears <em>first</em> on the left side of expression.
+Just as if you were indexing list - first you'd get tensor by index</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">tensors</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">list_of_tensors</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; b h w c&#39;</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 100, 200, 32)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># or maybe stack along last dimension?</span>
+<span class="n">tensors</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">list_of_tensors</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; h w c b&#39;</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(100, 200, 32, 10)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="concatenation">Concatenation<a class="anchor-link" href="#Concatenation">&#182;</a></h2><p>concatenate over the first dimension?</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">tensors</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">list_of_tensors</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; (b h) w c&#39;</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(1000, 200, 32)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>or maybe concatenate along last dimension?</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">tensors</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">list_of_tensors</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; h w (b c)&#39;</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">tensors</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(100, 200, 320)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="shuffling-within-a-dimension">Shuffling within a dimension<a class="anchor-link" href="#Shuffling-within-a-dimension">&#182;</a></h2><p><strong>channel shuffle</strong> (as it is drawn in shufflenet paper)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b (g1 g2 c) h w-&gt; b (g2 g1 c) h w&#39;</span><span class="p">,</span> <span class="n">g1</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">g2</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32, 100, 200)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>simpler version of <strong>channel shuffle</strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b (g c) h w-&gt; b (c g) h w&#39;</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32, 100, 200)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="split-a-dimension">Split a dimension<a class="anchor-link" href="#Split-a-dimension">&#182;</a></h2><p>Here's a super-convenient trick.</p>
+<p>Example: when a network predicts several bboxes for each position</p>
+<p>Assume we got 8 bboxes, 4 coordinates each. <br />
+To get coordinated into 4 separate variables, you move corresponding dimension to front and unpack tuple.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># NB: some symbolic backends don&#39;t support simply iterating over the first dimension</span>
+<span class="n">bbox_x</span><span class="p">,</span> <span class="n">bbox_y</span><span class="p">,</span> <span class="n">bbox_w</span><span class="p">,</span> <span class="n">bbox_h</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b (coord bbox) h w -&gt; coord b bbox h w&#39;</span><span class="p">,</span> <span class="n">coord</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="c1"># now you can operate on individual variables</span>
+<span class="n">max_bbox_area</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">bbox_w</span> <span class="o">*</span> <span class="n">bbox_h</span><span class="p">,</span> <span class="s1">&#39;b bbox h w -&gt; b h w&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">bbox_x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">max_bbox_area</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 8, 100, 200)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 100, 200)</a> (hover to see)</h4>
+    
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="getting-into-the-weeds-of-tensor-packing">Getting into the weeds of tensor packing<a class="anchor-link" href="#Getting-into-the-weeds-of-tensor-packing">&#182;</a></h2><p>you can skip this part - it explains why taking a habit of defining splits and packs explicitly</p>
+<p>when implementing custom gated activation (like GLU), split is needed:</p>
+<div class="highlight"><pre><span></span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b (split c) h w -&gt; split b c h w&#39;</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">y2</span> <span class="o">*</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">y2</span><span class="p">)</span> <span class="c1"># or tanh</span>
+</pre></div>
+<p>... but we could split differently</p>
+<div class="highlight"><pre><span></span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b (c split) h w -&gt; split b c h w&#39;</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<ul>
+<li>first one splits channels into consequent groups: <code>y1 = x[:, :x.shape[1] // 2, :, :]</code></li>
+<li>while second takes channels with a step: <code>y1 = x[:, 0::2, :, :]</code></li>
+</ul>
+<p>This may drive to very <em>surprising</em> results when input is</p>
+<ul>
+<li>a result of group convolution</li>
+<li>a result of bidirectional LSTM/RNN</li>
+<li>multi-head attention</li>
+</ul>
+<p>Let's focus on the second case (LSTM/RNN), since it is less obvious.</p>
+<p>For instance, cudnn concatenates LSTM outputs for forward-in-time and backward-in-time</p>
+<p>Also in pytorch GLU splits channels into consequent groups (first way)
+So when LSTM's output comes to GLU,</p>
+<ul>
+<li>forward-in-time produces linear part, and backward-in-time produces activation ...</li>
+<li>and role of directions is different, and gradients coming to two parts are different<ul>
+<li>that's not what you expect from simple <code>GLU(BLSTM(x))</code>, right?</li>
+</ul>
+</li>
+</ul>
+<p><code>einops</code> notation makes such inconsistencies explicit and easy-detectable</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="shape-parsing">Shape parsing<a class="anchor-link" href="#Shape-parsing">&#182;</a></h2><p>just a handy utility</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">einops</span> <span class="kn">import</span> <span class="n">parse_shape</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="k">def</span> <span class="nf">convolve_2d</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="c1"># imagine we have a simple 2d convolution with padding,</span>
+    <span class="c1"># so output has same shape as input.</span>
+    <span class="c1"># Sorry for laziness, use imagination!</span>
+    <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># imagine we are working with 3d data</span>
+<span class="n">x_5d</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c x (y z) -&gt; b c x y z&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="c1"># but we have only 2d convolutions. </span>
+<span class="c1"># That&#39;s not a problem, since we can apply</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x_5d</span><span class="p">,</span> <span class="s1">&#39;b c x y z -&gt; (b z) c x y&#39;</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">convolve_2d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="c1"># not just specifies additional information, but verifies that all dimensions match</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;(b z) c x y -&gt; b c x y z&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">parse_shape</span><span class="p">(</span><span class="n">x_5d</span><span class="p">,</span> <span class="s1">&#39;b c x y z&#39;</span><span class="p">))</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">parse_shape</span><span class="p">(</span><span class="n">x_5d</span><span class="p">,</span> <span class="s1">&#39;b c x y z&#39;</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[29]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;b&#39;: 10, &#39;c&#39;: 32, &#39;x&#39;: 100, &#39;y&#39;: 10, &#39;z&#39;: 20}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># we can skip some dimensions by writing underscore</span>
+<span class="n">parse_shape</span><span class="p">(</span><span class="n">x_5d</span><span class="p">,</span> <span class="s1">&#39;batch c _ _ _&#39;</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[30]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;batch&#39;: 10, &#39;c&#39;: 32}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="striding-anything">Striding anything<a class="anchor-link" href="#Striding-anything">&#182;</a></h2><p>Finally, how to convert any operation into a strided operation? <br />
+(like convolution with strides, aka dilated/atrous convolution)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># each image is split into subgrids, each is now a separate &quot;image&quot;</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c (h hs) (w ws) -&gt; (hs ws b) c h w&#39;</span><span class="p">,</span> <span class="n">hs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">convolve_2d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="c1"># pack subgrids back to an image</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;(hs ws b) c h w -&gt; b c (h hs) (w ws)&#39;</span><span class="p">,</span> <span class="n">hs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ws</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="layers">Layers<a class="anchor-link" href="#Layers">&#182;</a></h2><p>For frameworks that prefer operating with layers, layers are available.</p>
+<p>You'll need to import a proper one depending on your backend:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">einops.layers.chainer</span> <span class="kn">import</span> <span class="n">Rearrange</span><span class="p">,</span> <span class="n">Reduce</span>
+<span class="kn">from</span> <span class="nn">einops.layers.gluon</span> <span class="kn">import</span> <span class="n">Rearrange</span><span class="p">,</span> <span class="n">Reduce</span>
+<span class="kn">from</span> <span class="nn">einops.layers.keras</span> <span class="kn">import</span> <span class="n">Rearrange</span><span class="p">,</span> <span class="n">Reduce</span>
+<span class="kn">from</span> <span class="nn">einops.layers.torch</span> <span class="kn">import</span> <span class="n">Rearrange</span><span class="p">,</span> <span class="n">Reduce</span>
+</pre></div>
+<p><code>Einops</code> layers are identical to operations, and have same parameters. <br />
+(for the exception of first argument, which should be passed during call)</p>
+<div class="highlight"><pre><span></span><span class="n">layer</span> <span class="o">=</span> <span class="n">Rearrange</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">axes_lengths</span><span class="p">)</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">Reduce</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">reduction</span><span class="p">,</span> <span class="o">**</span><span class="n">axes_lengths</span><span class="p">)</span>
+
+<span class="c1"># apply layer to tensor</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+<p>Usually it is more convenient to use layers, not operations, to build models</p>
+<div class="highlight"><pre><span></span><span class="c1"># example given for pytorch, but code in other frameworks is almost identical</span>
+<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">Sequential</span><span class="p">,</span> <span class="n">Conv2d</span><span class="p">,</span> <span class="n">MaxPool2d</span><span class="p">,</span> <span class="n">Linear</span><span class="p">,</span> <span class="n">ReLU</span>
+<span class="kn">from</span> <span class="nn">einops.layers.torch</span> <span class="kn">import</span> <span class="n">Reduce</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">(</span>
+    <span class="n">Conv2d</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+    <span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+    <span class="n">Conv2d</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+    <span class="c1"># combined pooling and flattening in a single step</span>
+    <span class="n">Reduce</span><span class="p">(</span><span class="s1">&#39;b c (h h2) (w w2) -&gt; b (c h w)&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">h2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> 
+    <span class="n">Linear</span><span class="p">(</span><span class="mi">16</span><span class="o">*</span><span class="mi">5</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span> 
+    <span class="n">ReLU</span><span class="p">(),</span>
+    <span class="n">Linear</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> 
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="whats-now">What's now?<a class="anchor-link" href="#What's-now?">&#182;</a></h2><ul>
+<li>rush through <a href="https://arogozhnikov.github.io/einops/pytorch-examples.html">writing better code with einops+pytorch</a></li>
+</ul>
+<p>Use different framework? Not a big issue, most recommendations transfer well to other frameworks.
+As you know <code>einops</code> works the same way in any framework.</p>
+<p>Finally - just write your code with einops!</p>
+
+</div>
+</div>
+</div>
+ 
+
+
+
+</div>
+
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../1-einops-basics/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Einops Basics
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../pytorch-examples.html" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Pytorch Examples
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.6a3d08fc.min.js"></script>
+      <script src="../assets/javascripts/bundle.71201edf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+  </body>
+</html>
