@@ -439,34 +439,34 @@ This operation includes functionality of transpose (axes permutation), reshape (
 stack, concatenate and other operations.</p>
 <p>Examples for rearrange operation:</p>
 <div class="codehilite">
-<pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="c1"># suppose we have a set of 32 images in "h w c" format (height-width-channel)</span>
+<pre><span></span><code><span class="c1"># suppose we have a set of 32 images in "h w c" format (height-width-channel)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">)]</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># stack along first (batch) axis, output is a single array</span>
+<span class="c1"># stack along first (batch) axis, output is a single array</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="s1">'b h w c -&gt; b h w c'</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># concatenate images along height (vertical axis), 960 = 32 * 30</span>
+<span class="c1"># concatenate images along height (vertical axis), 960 = 32 * 30</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="s1">'b h w c -&gt; (b h) w c'</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">960</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># concatenated images along horizontal axis, 1280 = 32 * 40</span>
+<span class="c1"># concatenated images along horizontal axis, 1280 = 32 * 40</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="s1">'b h w c -&gt; h (b w) c'</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">1280</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># reordered axes to "b c h w" format for deep learning</span>
+<span class="c1"># reordered axes to "b c h w" format for deep learning</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="s1">'b h w c -&gt; b c h w'</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># flattened each image into a vector, 3600 = 30 * 40 * 3</span>
+<span class="c1"># flattened each image into a vector, 3600 = 30 * 40 * 3</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="s1">'b h w c -&gt; b (c h w)'</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">3600</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right), 128 = 32 * 2 * 2</span>
+<span class="c1"># split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right), 128 = 32 * 2 * 2</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="s1">'b (h1 h) (w1 w) c -&gt; (b h1 w1) h w c'</span><span class="p">,</span> <span class="n">h1</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w1</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># space-to-depth operation</span>
+<span class="c1"># space-to-depth operation</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="s1">'b (h h1) (w w1) c -&gt; b h w (c h1 w1)'</span><span class="p">,</span> <span class="n">h1</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w1</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
 </code></pre>
@@ -540,36 +540,37 @@ Find more examples in einops tutorial.</p>
 <span class="sd">    Examples for rearrange operation:</span>
 
 <span class="sd">    ```python</span>
-<span class="sd">    &gt;&gt;&gt; # suppose we have a set of 32 images in "h w c" format (height-width-channel)</span>
+<span class="sd">    # suppose we have a set of 32 images in "h w c" format (height-width-channel)</span>
 <span class="sd">    &gt;&gt;&gt; images = [np.random.randn(30, 40, 3) for _ in range(32)]</span>
 
-<span class="sd">    &gt;&gt;&gt; # stack along first (batch) axis, output is a single array</span>
+<span class="sd">    # stack along first (batch) axis, output is a single array</span>
 <span class="sd">    &gt;&gt;&gt; rearrange(images, 'b h w c -&gt; b h w c').shape</span>
 <span class="sd">    (32, 30, 40, 3)</span>
 
-<span class="sd">    &gt;&gt;&gt; # concatenate images along height (vertical axis), 960 = 32 * 30</span>
+<span class="sd">    # concatenate images along height (vertical axis), 960 = 32 * 30</span>
 <span class="sd">    &gt;&gt;&gt; rearrange(images, 'b h w c -&gt; (b h) w c').shape</span>
 <span class="sd">    (960, 40, 3)</span>
 
-<span class="sd">    &gt;&gt;&gt; # concatenated images along horizontal axis, 1280 = 32 * 40</span>
+<span class="sd">    # concatenated images along horizontal axis, 1280 = 32 * 40</span>
 <span class="sd">    &gt;&gt;&gt; rearrange(images, 'b h w c -&gt; h (b w) c').shape</span>
 <span class="sd">    (30, 1280, 3)</span>
 
-<span class="sd">    &gt;&gt;&gt; # reordered axes to "b c h w" format for deep learning</span>
+<span class="sd">    # reordered axes to "b c h w" format for deep learning</span>
 <span class="sd">    &gt;&gt;&gt; rearrange(images, 'b h w c -&gt; b c h w').shape</span>
 <span class="sd">    (32, 3, 30, 40)</span>
 
-<span class="sd">    &gt;&gt;&gt; # flattened each image into a vector, 3600 = 30 * 40 * 3</span>
+<span class="sd">    # flattened each image into a vector, 3600 = 30 * 40 * 3</span>
 <span class="sd">    &gt;&gt;&gt; rearrange(images, 'b h w c -&gt; b (c h w)').shape</span>
 <span class="sd">    (32, 3600)</span>
 
-<span class="sd">    &gt;&gt;&gt; # split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right), 128 = 32 * 2 * 2</span>
+<span class="sd">    # split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right), 128 = 32 * 2 * 2</span>
 <span class="sd">    &gt;&gt;&gt; rearrange(images, 'b (h1 h) (w1 w) c -&gt; (b h1 w1) h w c', h1=2, w1=2).shape</span>
 <span class="sd">    (128, 15, 20, 3)</span>
 
-<span class="sd">    &gt;&gt;&gt; # space-to-depth operation</span>
+<span class="sd">    # space-to-depth operation</span>
 <span class="sd">    &gt;&gt;&gt; rearrange(images, 'b (h h1) (w w1) c -&gt; b h w (c h1 w1)', h1=2, w1=2).shape</span>
 <span class="sd">    (32, 15, 20, 12)</span>
+
 <span class="sd">    ```</span>
 
 <span class="sd">    When composing axes, C-order enumeration used (consecutive elements have different last axis)</span>

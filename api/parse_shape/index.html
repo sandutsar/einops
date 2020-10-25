@@ -434,17 +434,15 @@
 <h2 class="hidden-toc" href="#einops.einops.parse_shape" id="einops.einops.parse_shape" style="visibility: hidden; position: absolute;">
         </h2>
 <div class="doc doc-contents first">
-<p>Parse a tensor shape to dictionary mapping axes names to their lengths.
-Use underscore to skip the dimension in parsing.</p>
+<p>Parse a tensor shape to dictionary mapping axes names to their lengths.</p>
 <div class="codehilite">
-<pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
+<pre><span></span><code><span class="c1"># Use underscore to skip the dimension in parsing.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">parse_shape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">'batch _ h w'</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span><span class="s1">'batch'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">'h'</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">:</span> <span class="mi">7</span><span class="p">}</span>
-</code></pre>
-</div>
-<p><code>parse_shape</code> output can be used to specify axes_lengths for other operations:</p>
-<div class="codehilite">
-<pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">700</span><span class="p">])</span>
+<span class="p">{</span><span class="s1">'batch'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">'h'</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">:</span> <span class="mi">7</span><span class="p">}</span>
+
+<span class="c1"># `parse_shape` output can be used to specify axes_lengths for other operations:</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">700</span><span class="p">])</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">'(b c h w) -&gt; b c h w'</span><span class="p">,</span> <span class="o">**</span><span class="n">parse_shape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">'b _ h w'</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
 </code></pre>
@@ -502,20 +500,18 @@ Use underscore to skip the dimension in parsing.</p>
 <pre><span></span><code><span class="k">def</span> <span class="nf">parse_shape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">"""</span>
 <span class="sd">    Parse a tensor shape to dictionary mapping axes names to their lengths.</span>
-<span class="sd">    Use underscore to skip the dimension in parsing.</span>
 
 <span class="sd">    ```python</span>
+<span class="sd">    # Use underscore to skip the dimension in parsing.</span>
 <span class="sd">    &gt;&gt;&gt; x = np.zeros([2, 3, 5, 7])</span>
 <span class="sd">    &gt;&gt;&gt; parse_shape(x, 'batch _ h w')</span>
-<span class="sd">    &gt;&gt;&gt; {'batch': 2, 'h': 5, 'w': 7}</span>
-<span class="sd">    ```</span>
+<span class="sd">    {'batch': 2, 'h': 5, 'w': 7}</span>
 
-<span class="sd">    `parse_shape` output can be used to specify axes_lengths for other operations:</span>
-
-<span class="sd">    ```python</span>
+<span class="sd">    # `parse_shape` output can be used to specify axes_lengths for other operations:</span>
 <span class="sd">    &gt;&gt;&gt; y = np.zeros([700])</span>
 <span class="sd">    &gt;&gt;&gt; rearrange(y, '(b c h w) -&gt; b c h w', **parse_shape(x, 'b _ h w')).shape</span>
 <span class="sd">    (2, 10, 5, 7)</span>
+
 <span class="sd">    ```</span>
 
 <span class="sd">    For symbolic frameworks may return symbols, not integers.</span>

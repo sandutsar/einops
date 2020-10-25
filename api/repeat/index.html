@@ -438,26 +438,26 @@
 This operation includes functionality of repeat, tile, broadcast functions.</p>
 <p>Examples for repeat operation:</p>
 <div class="codehilite">
-<pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="c1"># a grayscale image (of shape height x width)</span>
+<pre><span></span><code><span class="c1"># a grayscale image (of shape height x width)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># change it to RGB format by repeating in each channel</span>
+<span class="c1"># change it to RGB format by repeating in each channel</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">repeat</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s1">'h w -&gt; h w c'</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># repeat image 2 times along height (vertical axis)</span>
+<span class="c1"># repeat image 2 times along height (vertical axis)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">repeat</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s1">'h w -&gt; (repeat h) w'</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># repeat image 2 time along height and 3 times along width</span>
+<span class="c1"># repeat image 2 time along height and 3 times along width</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">repeat</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s1">'h w -&gt; h (repeat w)'</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># convert each pixel to a small square 2x2. Upsample image by 2x</span>
+<span class="c1"># convert each pixel to a small square 2x2. Upsample image by 2x</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">repeat</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s1">'h w -&gt; (h h2) (w w2)'</span><span class="p">,</span> <span class="n">h2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># pixelate image first by downsampling by 2x, then upsampling</span>
+<span class="c1"># pixelate image first by downsampling by 2x, then upsampling</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">downsampled</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s1">'(h h2) (w w2) -&gt; h w'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">,</span> <span class="n">h2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">repeat</span><span class="p">(</span><span class="n">downsampled</span><span class="p">,</span> <span class="s1">'h w -&gt; (h h2) (w w2)'</span><span class="p">,</span> <span class="n">h2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
 <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
@@ -531,29 +531,30 @@ list of tensors is also accepted, those should be of the same type and shape</p>
 <span class="sd">    Examples for repeat operation:</span>
 
 <span class="sd">    ```python</span>
-<span class="sd">    &gt;&gt;&gt; # a grayscale image (of shape height x width)</span>
+<span class="sd">    # a grayscale image (of shape height x width)</span>
 <span class="sd">    &gt;&gt;&gt; image = np.random.randn(30, 40)</span>
 
-<span class="sd">    &gt;&gt;&gt; # change it to RGB format by repeating in each channel</span>
+<span class="sd">    # change it to RGB format by repeating in each channel</span>
 <span class="sd">    &gt;&gt;&gt; repeat(image, 'h w -&gt; h w c', c=3).shape</span>
 <span class="sd">    (30, 40, 3)</span>
 
-<span class="sd">    &gt;&gt;&gt; # repeat image 2 times along height (vertical axis)</span>
+<span class="sd">    # repeat image 2 times along height (vertical axis)</span>
 <span class="sd">    &gt;&gt;&gt; repeat(image, 'h w -&gt; (repeat h) w', repeat=2).shape</span>
 <span class="sd">    (60, 40)</span>
 
-<span class="sd">    &gt;&gt;&gt; # repeat image 2 time along height and 3 times along width</span>
+<span class="sd">    # repeat image 2 time along height and 3 times along width</span>
 <span class="sd">    &gt;&gt;&gt; repeat(image, 'h w -&gt; h (repeat w)', repeat=3).shape</span>
 <span class="sd">    (30, 120)</span>
 
-<span class="sd">    &gt;&gt;&gt; # convert each pixel to a small square 2x2. Upsample image by 2x</span>
+<span class="sd">    # convert each pixel to a small square 2x2. Upsample image by 2x</span>
 <span class="sd">    &gt;&gt;&gt; repeat(image, 'h w -&gt; (h h2) (w w2)', h2=2, w2=2).shape</span>
 <span class="sd">    (60, 80)</span>
 
-<span class="sd">    &gt;&gt;&gt; # pixelate image first by downsampling by 2x, then upsampling</span>
+<span class="sd">    # pixelate image first by downsampling by 2x, then upsampling</span>
 <span class="sd">    &gt;&gt;&gt; downsampled = reduce(image, '(h h2) (w w2) -&gt; h w', 'mean', h2=2, w2=2)</span>
 <span class="sd">    &gt;&gt;&gt; repeat(downsampled, 'h w -&gt; (h h2) (w w2)', h2=2, w2=2).shape</span>
 <span class="sd">    (30, 40)</span>
+
 <span class="sd">    ```</span>
 
 <span class="sd">    When composing axes, C-order enumeration used (consecutive elements have different last axis)</span>
