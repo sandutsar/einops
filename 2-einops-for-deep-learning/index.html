@@ -37,6 +37,8 @@
     
     
     
+      <link rel="stylesheet" href="../css/mkdocs.css">
+    
     
       
     
@@ -301,8 +303,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#einopsasnumpy" class="md-nav__link">
-    einops.asnumpy
+  <a href="#meet-einopsasnumpy" class="md-nav__link">
+    Meet einops.asnumpy
   </a>
   
 </li>
@@ -580,8 +582,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#einopsasnumpy" class="md-nav__link">
-    einops.asnumpy
+  <a href="#meet-einopsasnumpy" class="md-nav__link">
+    Meet einops.asnumpy
   </a>
   
 </li>
@@ -1855,7 +1857,7 @@ h6:hover .anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="einops-tutorial-part-2-deep-learning">Einops tutorial, part 2: deep learning<a class="anchor-link" href="#Einops-tutorial,-part-2:-deep-learning">&#182;</a></h1><p><a href="https://github.com/arogozhnikov/einops/tree/master/docs">Previous part of tutorial</a> provides visual examples with numpy.</p>
+<h1 id="einops-tutorial-part-2-deep-learning">Einops tutorial, part 2: deep learning<a class="anchor-link" href="#Einops-tutorial,-part-2:-deep-learning">&#182;</a></h1><p>Previous part of tutorial provides visual examples with numpy.</p>
 <h2 id="whats-in-this-tutorial">What's in this tutorial?<a class="anchor-link" href="#What's-in-this-tutorial?">&#182;</a></h2><ul>
 <li>working with deep learning packages</li>
 <li>important cases for deep learning models</li>
@@ -1955,10 +1957,9 @@ h6:hover .anchor-link {
             <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;selected </span><span class="si">{}</span><span class="s1"> backend&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">flavour</span><span class="p">))</span>
 <span class="k">if</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
-    <span class="n">tf</span><span class="o">.</span><span class="n">enable_eager_execution</span><span class="p">()</span>
     <span class="n">tape</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">(</span><span class="n">persistent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">tape</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">eager</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span>
 <span class="k">elif</span> <span class="n">flavour</span> <span class="o">==</span> <span class="s1">&#39;pytorch&#39;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">torch</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -2074,9 +2075,15 @@ h6:hover .anchor-link {
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 100, 200, 32)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 100, 200, 32)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2092,7 +2099,8 @@ h6:hover .anchor-link {
 Einops functions work with any tensor like they are native to the framework.</p>
 <h2 id="backpropagation">Backpropagation<a class="anchor-link" href="#Backpropagation">&#182;</a></h2><ul>
 <li>gradients are a corner stone of deep learning</li>
-<li>You can back-propagate through einops operations (just as with framework native operations)</li>
+<li>You can back-propagate through einops operations <br />
+(just as with framework native operations)</li>
 </ul>
 
 </div>
@@ -2145,7 +2153,7 @@ Einops functions work with any tensor like they are native to the framework.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="einopsasnumpy"><code>einops.asnumpy</code><a class="anchor-link" href="#einops.asnumpy">&#182;</a></h2><p>Converts tensors to numpy</p>
+<h2 id="meet-einopsasnumpy">Meet <code>einops.asnumpy</code><a class="anchor-link" href="#Meet-einops.asnumpy">&#182;</a></h2><p>Just converts tensors to numpy (and pulls from gpu if necessary)</p>
 
 </div>
 </div>
@@ -2161,7 +2169,7 @@ Einops functions work with any tensor like they are native to the framework.</p>
             <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">einops</span> <span class="kn">import</span> <span class="n">asnumpy</span>
 <span class="n">y3_numpy</span> <span class="o">=</span> <span class="n">asnumpy</span><span class="p">(</span><span class="n">y3</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">y3_numpy</span><span class="p">),</span> <span class="n">y3_numpy</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">y3_numpy</span><span class="p">))</span>
 </pre></div>
 
         </div>
@@ -2179,7 +2187,7 @@ Einops functions work with any tensor like they are native to the framework.</p>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;class &#39;numpy.ndarray&#39;&gt; ()
+<pre>&lt;class &#39;numpy.ndarray&#39;&gt;
 </pre>
 </div>
 </div>
@@ -2191,7 +2199,7 @@ Einops functions work with any tensor like they are native to the framework.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="common-building-blocks-of-deep-learning">Common building blocks of deep learning<a class="anchor-link" href="#Common-building-blocks-of-deep-learning">&#182;</a></h2><p>Let's run though some familiar operations and check how those can be written with <code>einops</code></p>
+<h2 id="common-building-blocks-of-deep-learning">Common building blocks of deep learning<a class="anchor-link" href="#Common-building-blocks-of-deep-learning">&#182;</a></h2><p>Let's check how some familiar operations can be written with <code>einops</code></p>
 <p><strong>Flattening</strong> is common operation, frequently appears at the boundary
 between convolutional layers and fully connected layers</p>
 
@@ -2226,9 +2234,15 @@ between convolutional layers and fully connected layers</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 640000)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 640000)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2273,9 +2287,15 @@ between convolutional layers and fully connected layers</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 128, 50, 100)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 128, 50, 100)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2320,9 +2340,15 @@ between convolutional layers and fully connected layers</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 8, 200, 400)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 8, 200, 400)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2367,9 +2393,15 @@ between convolutional layers and fully connected layers</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 32)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2414,9 +2446,61 @@ between convolutional layers and fully connected layers</p>
 
 
 <div class="output_html rendered_html output_subarea ">
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 32, 50, 100)</span> (hover to see)</h4>
+</div>
 
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32, 50, 100)</a> (hover to see)</h4>
-    
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># you can skip names for reduced axes</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c (h 2) (w 2) -&gt; b c h w&#39;</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+<span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 32, 50, 100)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2429,10 +2513,10 @@ between convolutional layers and fully connected layers</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="1d-2d-and-3d-pooling-are-defined-in-a-similar-way">1d, 2d and 3d pooling are defined in a similar way<a class="anchor-link" href="#1d,-2d-and-3d-pooling-are-defined-in-a-similar-way">&#182;</a></h2><p>for sequential 1-d models, you'll probably want pooling over time</p>
-<div class="highlight"><pre><span></span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;(t t2) b c -&gt; t b c&#39;</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">t2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;(t 2) b c -&gt; t b c&#39;</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
 </pre></div>
 <p>for volumetric models, all three dimensions are pooled</p>
-<div class="highlight"><pre><span></span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c (x x2) (y y2) (z z2) -&gt; b c x y z&#39;</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">z2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b c (x 2) (y 2) (z 2) -&gt; b c x y z&#39;</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
 </pre></div>
 <p>Uniformity is a strong point of <code>einops</code>, and you don't need specific operation for each particular case.</p>
 <h3 id="good-exercises">Good exercises<a class="anchor-link" href="#Good-exercises">&#182;</a></h3><ul>
@@ -2452,7 +2536,7 @@ between convolutional layers and fully connected layers</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 
     <div class="inner_cell">
         
@@ -2463,34 +2547,16 @@ between convolutional layers and fully connected layers</p>
 <span class="n">image</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;c h w -&gt; h w c&#39;</span><span class="p">)</span>
 <span class="c1"># ... create a dummy 1-element axis ...</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s1">&#39;h w c -&gt; () c h w&#39;</span><span class="p">)</span>
-<span class="c1"># ... imagine you predicted this with a convolutional network for classification, we&#39;ll just flatten axes ...</span>
+<span class="c1"># ... imagine you predicted this with a convolutional network for classification,</span>
+<span class="c1"># we&#39;ll just flatten axes ...</span>
 <span class="n">predictions</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;b c h w -&gt; b (c h w)&#39;</span><span class="p">)</span>
 <span class="c1"># ... finally, decompose (remove) dummy axis</span>
-<span class="n">predictions</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="s1">&#39;() class -&gt; class&#39;</span><span class="p">)</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="s1">&#39;() classes -&gt; classes&#39;</span><span class="p">)</span>
 </pre></div>
 
         </div>
     </div>
 
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/Users/axelr/projects/einops/einops/parsing.py:136: RuntimeWarning: It is discouraged to use axes names that are keywords: class
-  warnings.warn(&#34;It is discouraged to use axes names that are keywords: {}&#34;.format(name), RuntimeWarning)
-</pre>
-</div>
-</div>
-
-</div>
 </div>
 
 </div>
@@ -2508,7 +2574,7 @@ between convolutional layers and fully connected layers</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 
     <div class="inner_cell">
         
@@ -2534,9 +2600,15 @@ between convolutional layers and fully connected layers</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32, 100, 200)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 32, 100, 200)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2555,7 +2627,7 @@ between convolutional layers and fully connected layers</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 
     <div class="inner_cell">
         
@@ -2581,9 +2653,15 @@ between convolutional layers and fully connected layers</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32, 100, 200)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 32, 100, 200)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2602,7 +2680,7 @@ between convolutional layers and fully connected layers</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 
     <div class="inner_cell">
         
@@ -2628,7 +2706,7 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 
     <div class="inner_cell">
         
@@ -2654,9 +2732,15 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 100, 200, 32)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 100, 200, 32)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2667,7 +2751,7 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 
     <div class="inner_cell">
         
@@ -2694,9 +2778,15 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(100, 200, 32, 10)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(100, 200, 32, 10)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2715,7 +2805,7 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 
     <div class="inner_cell">
         
@@ -2741,9 +2831,15 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(1000, 200, 32)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(1000, 200, 32)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2762,7 +2858,7 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 
     <div class="inner_cell">
         
@@ -2788,9 +2884,15 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(100, 200, 320)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(100, 200, 320)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2809,7 +2911,7 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 
     <div class="inner_cell">
         
@@ -2835,9 +2937,15 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32, 100, 200)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 32, 100, 200)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2856,7 +2964,7 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 
     <div class="inner_cell">
         
@@ -2882,9 +2990,15 @@ Just as if you were indexing list - first you'd get tensor by index</p>
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 32, 100, 200)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 32, 100, 200)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2906,14 +3020,14 @@ To get coordinated into 4 separate variables, you move corresponding dimension t
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 
     <div class="inner_cell">
         
         
         <div class="input_area">
-            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># NB: some symbolic backends don&#39;t support simply iterating over the first dimension</span>
-<span class="n">bbox_x</span><span class="p">,</span> <span class="n">bbox_y</span><span class="p">,</span> <span class="n">bbox_w</span><span class="p">,</span> <span class="n">bbox_h</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b (coord bbox) h w -&gt; coord b bbox h w&#39;</span><span class="p">,</span> <span class="n">coord</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="n">bbox_x</span><span class="p">,</span> <span class="n">bbox_y</span><span class="p">,</span> <span class="n">bbox_w</span><span class="p">,</span> <span class="n">bbox_h</span> <span class="o">=</span> \
+    <span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b (coord bbox) h w -&gt; coord b bbox h w&#39;</span><span class="p">,</span> <span class="n">coord</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="c1"># now you can operate on individual variables</span>
 <span class="n">max_bbox_area</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">bbox_w</span> <span class="o">*</span> <span class="n">bbox_h</span><span class="p">,</span> <span class="s1">&#39;b bbox h w -&gt; b h w&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">)</span>
 <span class="n">guess</span><span class="p">(</span><span class="n">bbox_x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -2936,9 +3050,15 @@ To get coordinated into 4 separate variables, you move corresponding dimension t
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 8, 100, 200)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 8, 100, 200)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -2950,9 +3070,15 @@ To get coordinated into 4 separate variables, you move corresponding dimension t
 
 
 <div class="output_html rendered_html output_subarea ">
-
-    <h4>Answer is: <a class="anchor-link jp-InternalAnchorLink" href="#Z">(10, 100, 200)</a> (hover to see)</h4>
-    
+<style>
+.einops-answer {
+    color: transparent;
+    padding: 5px 15px;
+    background-color: #def;
+}
+.einops-answer:hover { color: blue; } 
+</style>
+<h4>Answer is: <span class='einops-answer'>(10, 100, 200)</span> (hover to see)</h4>
 </div>
 
 </div>
@@ -3008,7 +3134,7 @@ So when LSTM's output comes to GLU,</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 
     <div class="inner_cell">
         
@@ -3025,7 +3151,7 @@ So when LSTM's output comes to GLU,</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 
     <div class="inner_cell">
         
@@ -3046,7 +3172,7 @@ So when LSTM's output comes to GLU,</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 
     <div class="inner_cell">
         
@@ -3070,7 +3196,7 @@ So when LSTM's output comes to GLU,</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 
     <div class="inner_cell">
         
@@ -3090,7 +3216,7 @@ So when LSTM's output comes to GLU,</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[29]:</div>
+    <div class="prompt output_prompt">Out[30]:</div>
 
 
 
@@ -3107,7 +3233,7 @@ So when LSTM's output comes to GLU,</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 
     <div class="inner_cell">
         
@@ -3128,7 +3254,7 @@ So when LSTM's output comes to GLU,</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[30]:</div>
+    <div class="prompt output_prompt">Out[31]:</div>
 
 
 
@@ -3154,7 +3280,7 @@ So when LSTM's output comes to GLU,</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 
     <div class="inner_cell">
         
@@ -3203,7 +3329,7 @@ So when LSTM's output comes to GLU,</p>
     <span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
     <span class="n">Conv2d</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
     <span class="c1"># combined pooling and flattening in a single step</span>
-    <span class="n">Reduce</span><span class="p">(</span><span class="s1">&#39;b c (h h2) (w w2) -&gt; b (c h w)&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">h2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> 
+    <span class="n">Reduce</span><span class="p">(</span><span class="s1">&#39;b c (h 2) (w 2) -&gt; b (c h w)&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">),</span> 
     <span class="n">Linear</span><span class="p">(</span><span class="mi">16</span><span class="o">*</span><span class="mi">5</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span> 
     <span class="n">ReLU</span><span class="p">(),</span>
     <span class="n">Linear</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> 
@@ -3219,8 +3345,8 @@ So when LSTM's output comes to GLU,</p>
 <h2 id="whats-now">What's now?<a class="anchor-link" href="#What's-now?">&#182;</a></h2><ul>
 <li>rush through <a href="https://arogozhnikov.github.io/einops/pytorch-examples.html">writing better code with einops+pytorch</a></li>
 </ul>
-<p>Use different framework? Not a big issue, most recommendations transfer well to other frameworks.
-As you know <code>einops</code> works the same way in any framework.</p>
+<p>Use different framework? Not a big issue, most recommendations transfer well to other frameworks. <br />
+<code>einops</code> works the same way in any framework.</p>
 <p>Finally - just write your code with einops!</p>
 
 </div>

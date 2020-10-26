@@ -37,6 +37,8 @@
     
     
     
+      <link rel="stylesheet" href="../css/mkdocs.css">
+    
     
       
     
@@ -289,8 +291,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#axis-decomposition" class="md-nav__link">
-    Axis decomposition
+  <a href="#decomposition-of-axis" class="md-nav__link">
+    Decomposition of axis
   </a>
   
 </li>
@@ -303,8 +305,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#einopsreduce" class="md-nav__link">
-    einops.reduce
+  <a href="#meet-einopsreduce" class="md-nav__link">
+    Meet einops.reduce
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stack-and-concatenate" class="md-nav__link">
+    Stack and concatenate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#addition-or-removal-of-axes" class="md-nav__link">
+    Addition or removal of axes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reduce-repeat" class="md-nav__link">
+    Reduce ⇆ repeat
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fancy-examples-in-random-order" class="md-nav__link">
+    Fancy examples in random order
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ok-numpy-is-fun-but-how-do-i-use-einops-with-some-other-framework" class="md-nav__link">
+    Ok, numpy is fun, but how do I use einops with some other framework?
   </a>
   
 </li>
@@ -490,8 +527,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#axis-decomposition" class="md-nav__link">
-    Axis decomposition
+  <a href="#decomposition-of-axis" class="md-nav__link">
+    Decomposition of axis
   </a>
   
 </li>
@@ -504,8 +541,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#einopsreduce" class="md-nav__link">
-    einops.reduce
+  <a href="#meet-einopsreduce" class="md-nav__link">
+    Meet einops.reduce
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stack-and-concatenate" class="md-nav__link">
+    Stack and concatenate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#addition-or-removal-of-axes" class="md-nav__link">
+    Addition or removal of axes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reduce-repeat" class="md-nav__link">
+    Reduce ⇆ repeat
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fancy-examples-in-random-order" class="md-nav__link">
+    Fancy examples in random order
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ok-numpy-is-fun-but-how-do-i-use-einops-with-some-other-framework" class="md-nav__link">
+    Ok, numpy is fun, but how do I use einops with some other framework?
   </a>
   
 </li>
@@ -1675,7 +1747,8 @@ h6:hover .anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="einops-tutorial-part-1-basics">Einops tutorial, part 1: basics<a class="anchor-link" href="#Einops-tutorial,-part-1:-basics">&#182;</a></h1><p><img src='http://arogozhnikov.github.io/images/einops/einops_logo_350x350.png' height="80" /></p>
+<h1 id="einops-tutorial-part-1-basics">Einops tutorial, part 1: basics<a class="anchor-link" href="#Einops-tutorial,-part-1:-basics">&#182;</a></h1><!-- <img src='http://arogozhnikov.github.io/images/einops/einops_logo_350x350.png' height="80" /> -->
+
 <h2 id="welcome-to-einops-land">Welcome to einops-land!<a class="anchor-link" href="#Welcome-to-einops-land!">&#182;</a></h2><p>We don't write</p>
 <div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -1707,7 +1780,8 @@ h6:hover .anchor-link {
         
         
         <div class="input_area">
-            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># Examples are given for `numpy`. This code also setups ipython/jupyter so that numpy arrays in the output are displayed as images</span>
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># Examples are given for `numpy`. This code also setups ipython/jupyter</span>
+<span class="c1"># so that numpy arrays in the output are displayed as images</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">display_np_arrays_as_images</span>
 <span class="n">display_np_arrays_as_images</span><span class="p">()</span>
@@ -2074,7 +2148,7 @@ h6:hover .anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="axis-decomposition">Axis decomposition<a class="anchor-link" href="#Axis-decomposition">&#182;</a></h2>
+<h2 id="decomposition-of-axis">Decomposition of axis<a class="anchor-link" href="#Decomposition-of-axis">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -2376,13 +2450,13 @@ h6:hover .anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="einopsreduce">einops.reduce<a class="anchor-link" href="#einops.reduce">&#182;</a></h2><p>In einops-land you don't need to guess what happened</p>
+<h2 id="meet-einopsreduce">Meet einops.reduce<a class="anchor-link" href="#Meet-einops.reduce">&#182;</a></h2><p>In einops-land you don't need to guess what happened</p>
 <div class="highlight"><pre><span></span><span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 <p>Because you write what the operation does</p>
 <div class="highlight"><pre><span></span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b h w c -&gt; b h w&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">)</span>
 </pre></div>
-<p>if axis is not present in the output - you guessed it right - it was reduced.</p>
+<p>if axis is not present in the output — you guessed it — axis was reduced.</p>
 
 </div>
 </div>
@@ -2509,13 +2583,6 @@ h6:hover .anchor-link {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="this-is-mean-pooling-with-2x2-kernel">this is mean-pooling with 2x2 kernel<a class="anchor-link" href="#this-is-mean-pooling-with-2x2-kernel">&#182;</a></h1>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[21]:</div>
@@ -2524,7 +2591,8 @@ h6:hover .anchor-link {
         
         
         <div class="input_area">
-            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># image is split into 2x2 patches, each patch is averaged</span>
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># this is mean-pooling with 2x2 kernel</span>
+<span class="c1"># image is split into 2x2 patches, each patch is averaged</span>
 <span class="n">reduce</span><span class="p">(</span><span class="n">ims</span><span class="p">,</span> <span class="s1">&#39;b (h h2) (w w2) c -&gt; h (b w) c&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">h2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
@@ -2735,17 +2803,47 @@ h6:hover .anchor-link {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="thats-the-way-numpy-stacking-works">that's the way numpy stacking works:<a class="anchor-link" href="#that's-the-way-numpy-stacking-works:">&#182;</a></h1><p>numpy.array_equal(rearrange(x, 'b h w c -&gt; h w c b'), numpy.stack(x, axis=3))</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[26]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># that&#39;s equivalent to numpy stacking</span>
+<span class="n">numpy</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;b h w c -&gt; h w c b&#39;</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[26]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>True</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 
     <div class="inner_cell">
         
@@ -2766,7 +2864,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[26]:</div>
+    <div class="prompt output_prompt">Out[27]:</div>
 
 
 
@@ -2783,7 +2881,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 
     <div class="inner_cell">
         
@@ -2804,7 +2902,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[27]:</div>
+    <div class="prompt output_prompt">Out[28]:</div>
 
 
 
@@ -2830,7 +2928,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 
     <div class="inner_cell">
         
@@ -2876,7 +2974,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 
     <div class="inner_cell">
         
@@ -2898,7 +2996,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[29]:</div>
+    <div class="prompt output_prompt">Out[30]:</div>
 
 
 
@@ -2918,14 +3016,14 @@ h6:hover .anchor-link {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="fancy-examples-in-random-order">Fancy examples in random order<a class="anchor-link" href="#Fancy-examples-in-random-order">&#182;</a></h1><p>(a.k.a. mad designer gallery)</p>
+<h2 id="fancy-examples-in-random-order">Fancy examples in random order<a class="anchor-link" href="#Fancy-examples-in-random-order">&#182;</a></h2><p>(a.k.a. mad designer gallery)</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 
     <div class="inner_cell">
         
@@ -2947,7 +3045,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[30]:</div>
+    <div class="prompt output_prompt">Out[31]:</div>
 
 
 
@@ -2966,7 +3064,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 
     <div class="inner_cell">
         
@@ -2987,7 +3085,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[31]:</div>
+    <div class="prompt output_prompt">Out[32]:</div>
 
 
 
@@ -3006,7 +3104,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 
     <div class="inner_cell">
         
@@ -3028,7 +3126,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[32]:</div>
+    <div class="prompt output_prompt">Out[33]:</div>
 
 
 
@@ -3047,54 +3145,15 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
-
-    <div class="inner_cell">
-        
-        
-        <div class="input_area">
-            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># color can be also composed into dimension</span>
-<span class="n">rearrange</span><span class="p">(</span><span class="n">ims</span><span class="p">,</span> <span class="s1">&#39;b h w c -&gt; (c h) (b w)&#39;</span><span class="p">)</span>
-</pre></div>
-
-        </div>
-    </div>
-
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[33]:</div>
-
-
-
-
-<div class="output_png output_subarea output_execute_result">
-<img src="data:image/png;base64,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
-"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 <div class="prompt input_prompt">In&nbsp;[34]:</div>
 
     <div class="inner_cell">
         
         
         <div class="input_area">
-            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># disproportionate resize</span>
-<span class="n">reduce</span><span class="p">(</span><span class="n">ims</span><span class="p">,</span> <span class="s1">&#39;b (h1 h2) (w1 w2) c -&gt; (h1) (b w1)&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">h2</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># color can be also composed into dimension</span>
+<span class="c1"># ... while image is downsampled</span>
+<span class="n">reduce</span><span class="p">(</span><span class="n">ims</span><span class="p">,</span> <span class="s1">&#39;b (h 2) (w 2) c -&gt; (c h) (b w)&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">)</span>
 </pre></div>
 
         </div>
@@ -3114,7 +3173,7 @@ h6:hover .anchor-link {
 
 
 <div class="output_png output_subarea output_execute_result">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAAAYCAAAAACJ2q2ZAAAD/ElEQVR4nNWYfUxbVRjGf21py4fQba1MpwxHYQQBE0STJdvCSDbdlhidH2E6IijGRRKd8sc+YjLjgsmc+zJLpmbOxDmXzZl1ATSxxsAEg7GwzS1RpyxYKuuA0sIoG5SW+kfbW8Y9LVwWDD5/vfc5z3vO+/T0vPe0KjfTh7fOmb1eqyDhP0CCAu3Aqi545FslKbMPtQJtcxfQ9ttslTIzKDGQrwOMD8xSJTOESskZuHDEmV29ZNZqmREUGZiLmHgi/Q31551+g3lFeZZcuMsWDqrXiWf6vqWju3fQhyGrpPI+ocL7lfVyX9D04JqN8wSj1saOa64hn8aYu+r5dGF+z6nmK65Rbeq9S5eVJ0bICTtgq74acVWzTTU5e6M1HOx7SWxgwzkpTDr8pEBg2dofjtJqy+Pn79wsyP9i+61IqLfrImH0EDc+Eakf/54PxEVOE7c2X5WTn1VF6ufGGwfj5+/YKydb35Tqp0iqP2qg/xUfFFm6elorgL2Oyfkn3W739bjLAqUOV8e7gO9z2dCfOwDzKUd3fSFQe1Gcb+/rPHI3sFverC1BMFrsLufFE1vKorRk4KgHjJaSu7S5B0rBf3aqWoXQpagXvP4w0CYbOjwG+jNrUpKWn06G8Y+E+fpUjeGZ48C4/BPQASOeJLV+8dp3KqK0dIgbgcAmADqBX2dkAIDC89AnY5uB1RkA6avroCV2/qPF7WCT0RVfDjL8smHl8pLciQdUMuAEBn6S+DvorsmAT8b2ARmhcBHgijOBuV20fs5325tgsKGBxS+8lirR0lco6Xb5HVzZZA0MgDRgIBS6w4+xcFNeDsDSM7badfOBrt0rOiVW2oGCK1DYJF48Aq0mAMNxJTFRfA2aRvXA8A9AcWzlmA3IFY2Yq6uDf1gPuXFsPR3hpB14EbhceSkI4GoQ9xtVJvC1F3DfUGqgErj+1jB4Xu0HxC8Trx98b/cA8relZVejF1R5W8qAaJOSdmBl1VGor5+XmTzS3csnzwkXeOxjuJSfN+7sPlAhFMRGaflxOFmXF/h9FHj2caGoJcus/8sD5DwtGztbf1Cdka4dcTqBfLkB3jftH4OBAQAuiA3UfOOAoV+AdqUG2J/4KdxsB2DTvhgib6j7LTwmO4PBn2Hcbg893POexEffxOptbTX5oUftQ5ni+U3W8hQAdUGBsuqBhD3Wp1IAktbXHdKJNQszAdKqfpQfgeCHleF7cELRztYciZ90Gx1xePx606I4Pcjf2a+anyFoEtNB4G9X0LhE/JNuwzlYe6LX4TNlaWKkD/4zFNAvuP8295MmS8xhCiTkTCmJDY3ZPIUiXXwRDcFgkHNKfpHNSfzvDcydvxjKlkG28rR/Ac8vJ3W92+bJAAAAAElFTkSuQmCC
+<img src="data:image/png;base64,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
 "
 >
 </div>
@@ -3128,6 +3187,46 @@ h6:hover .anchor-link {
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[35]:</div>
+
+    <div class="inner_cell">
+        
+        
+        <div class="input_area">
+            <div class=" highlight highlight-ipynb hl-python"><pre><span></span><span class="c1"># disproportionate resize</span>
+<span class="n">reduce</span><span class="p">(</span><span class="n">ims</span><span class="p">,</span> <span class="s1">&#39;b (h 4) (w 3) c -&gt; (h) (b w)&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+</pre></div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[35]:</div>
+
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAAAYCAAAAACJ2q2ZAAAD/ElEQVR4nNWYfUxbVRjGf21py4fQba1MpwxHYQQBE0STJdvCSDbdlhidH2E6IijGRRKd8sc+YjLjgsmc+zJLpmbOxDmXzZl1ATSxxsAEg7GwzS1RpyxYKuuA0sIoG5SW+kfbW8Y9LVwWDD5/vfc5z3vO+/T0vPe0KjfTh7fOmb1eqyDhP0CCAu3Aqi545FslKbMPtQJtcxfQ9ttslTIzKDGQrwOMD8xSJTOESskZuHDEmV29ZNZqmREUGZiLmHgi/Q31551+g3lFeZZcuMsWDqrXiWf6vqWju3fQhyGrpPI+ocL7lfVyX9D04JqN8wSj1saOa64hn8aYu+r5dGF+z6nmK65Rbeq9S5eVJ0bICTtgq74acVWzTTU5e6M1HOx7SWxgwzkpTDr8pEBg2dofjtJqy+Pn79wsyP9i+61IqLfrImH0EDc+Eakf/54PxEVOE7c2X5WTn1VF6ufGGwfj5+/YKydb35Tqp0iqP2qg/xUfFFm6elorgL2Oyfkn3W739bjLAqUOV8e7gO9z2dCfOwDzKUd3fSFQe1Gcb+/rPHI3sFverC1BMFrsLufFE1vKorRk4KgHjJaSu7S5B0rBf3aqWoXQpagXvP4w0CYbOjwG+jNrUpKWn06G8Y+E+fpUjeGZ48C4/BPQASOeJLV+8dp3KqK0dIgbgcAmADqBX2dkAIDC89AnY5uB1RkA6avroCV2/qPF7WCT0RVfDjL8smHl8pLciQdUMuAEBn6S+DvorsmAT8b2ARmhcBHgijOBuV20fs5325tgsKGBxS+8lirR0lco6Xb5HVzZZA0MgDRgIBS6w4+xcFNeDsDSM7badfOBrt0rOiVW2oGCK1DYJF48Aq0mAMNxJTFRfA2aRvXA8A9AcWzlmA3IFY2Yq6uDf1gPuXFsPR3hpB14EbhceSkI4GoQ9xtVJvC1F3DfUGqgErj+1jB4Xu0HxC8Trx98b/cA8relZVejF1R5W8qAaJOSdmBl1VGor5+XmTzS3csnzwkXeOxjuJSfN+7sPlAhFMRGaflxOFmXF/h9FHj2caGoJcus/8sD5DwtGztbf1Cdka4dcTqBfLkB3jftH4OBAQAuiA3UfOOAoV+AdqUG2J/4KdxsB2DTvhgib6j7LTwmO4PBn2Hcbg893POexEffxOptbTX5oUftQ5ni+U3W8hQAdUGBsuqBhD3Wp1IAktbXHdKJNQszAdKqfpQfgeCHleF7cELRztYciZ90Gx1xePx606I4Pcjf2a+anyFoEtNB4G9X0LhE/JNuwzlYe6LX4TNlaWKkD/4zFNAvuP8295MmS8xhCiTkTCmJDY3ZPIUiXXwRDcFgkHNKfpHNSfzvDcydvxjKlkG28rR/Ac8vJ3W92+bJAAAAAElFTkSuQmCC
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 
     <div class="inner_cell">
         
@@ -3148,7 +3247,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[35]:</div>
+    <div class="prompt output_prompt">Out[36]:</div>
 
 
 
@@ -3167,7 +3266,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
 
     <div class="inner_cell">
         
@@ -3188,7 +3287,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[36]:</div>
+    <div class="prompt output_prompt">Out[37]:</div>
 
 
 
@@ -3207,7 +3306,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
 
     <div class="inner_cell">
         
@@ -3228,7 +3327,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[37]:</div>
+    <div class="prompt output_prompt">Out[38]:</div>
 
 
 
@@ -3247,7 +3346,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
 
     <div class="inner_cell">
         
@@ -3267,7 +3366,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[38]:</div>
+    <div class="prompt output_prompt">Out[39]:</div>
 
 
 
@@ -3286,7 +3385,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
 
     <div class="inner_cell">
         
@@ -3308,7 +3407,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[39]:</div>
+    <div class="prompt output_prompt">Out[40]:</div>
 
 
 
@@ -3327,7 +3426,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 
     <div class="inner_cell">
         
@@ -3351,7 +3450,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[40]:</div>
+    <div class="prompt output_prompt">Out[41]:</div>
 
 
 
@@ -3370,7 +3469,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
 
     <div class="inner_cell">
         
@@ -3392,7 +3491,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[41]:</div>
+    <div class="prompt output_prompt">Out[42]:</div>
 
 
 
@@ -3411,7 +3510,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
 
     <div class="inner_cell">
         
@@ -3431,7 +3530,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[42]:</div>
+    <div class="prompt output_prompt">Out[43]:</div>
 
 
 
@@ -3450,7 +3549,7 @@ h6:hover .anchor-link {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
 
     <div class="inner_cell">
         
@@ -3472,7 +3571,7 @@ h6:hover .anchor-link {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[43]:</div>
+    <div class="prompt output_prompt">Out[44]:</div>
 
 
 
@@ -3521,10 +3620,10 @@ Operations do not change when moving to another framework</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h1><ul>
-<li>composition and decomposition of axes are a corner stone, they can and should be used together</li>
-<li><code>rearrange</code> doesn't change number of elements and covers different numpy functions (like <code>transpose</code>, <code>reshape</code>, <code>stack</code>, <code>concatenate</code>,  <code>squeeze</code> and <code>expand_dims</code>) </li>
+<li><code>rearrange</code> doesn't change number of elements and covers different numpy functions (like <code>transpose</code>, <code>reshape</code>, <code>stack</code>, <code>concatenate</code>,  <code>squeeze</code> and <code>expand_dims</code>)</li>
 <li><code>reduce</code> combines same reordering syntax with reductions (<code>mean</code>, <code>min</code>, <code>max</code>, <code>sum</code>, <code>prod</code>, and any others)</li>
 <li><code>repeat</code> additionally covers repeating and tiling</li>
+<li>composition and decomposition of axes are a corner stone, they can and should be used together</li>
 </ul>
 <ul>
 <li><a href="https://github.com/arogozhnikov/einops/tree/master/docs">Second part of tutorial</a> shows how einops works with other frameworks</li>
