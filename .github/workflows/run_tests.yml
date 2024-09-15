@@ -1,6 +1,6 @@
 name: Run tests
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -8,14 +8,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.8]
+        python-version: ['3.8', '3.10']
+        # currently there is conflict between tf, oneflow and paddle in protobuf versions.
+        # cupy is not tested because it demands gpu
+        # oneflow testing is dropped, see details at https://github.com/Oneflow-Inc/oneflow/issues/10340
+        # paddle was switched off because of divergence with numpy in py3.10, paddle==2.6.1
+        frameworks: ['numpy pytorch tensorflow jax']
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Check for ruff compliance
+        run: |
+          pip install ruff==0.6.5 && ruff check . && ruff format . --check
       - name: Run tests
         run: |
-          python test.py
+          python test.py ${{ matrix.frameworks }}

@@ -111,3 +111,20 @@ design-einops.txt
 
 # logo and video generation
 logo
+
+# code of internal checks
+_uncommited_explorations
+trash_notebooks
+*.personal*
+
+# oneflow's output trash
+log
+
+# this file is auto-generated
+docs_src/index.md
+
+# vs code 
+*.code-workspace
+
+# macos files
+.DS_Store

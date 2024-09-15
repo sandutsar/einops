@@ -3,29 +3,35 @@ Backends in `einops` are organized to meet the following requirements
 - backends are not imported unless those are actually needed, because
     - backends may not be installed
     - importing all available backends will drive to significant memory footprint
-    - backends may by present but installed with errors (but never used),
+    - backends may be present but installed with errors (but never used),
       importing may drive to crashes
-- backend should be either symbolic or imperative (tensorflow is for both, but that causes problems)
+- backend should be either symbolic or imperative
     - this determines which methods (from_numpy/to_numpy or create_symbol/eval_symbol) should be defined
-- if backend can't (temporarily) provide symbols for shape dimensions, UnknownSize objects are used
+- if backend can't provide symbols for shape dimensions, UnknownSize objects are used
 """
 
 import sys
-import warnings
 
-__author__ = 'Alex Rogozhnikov'
+__author__ = "Alex Rogozhnikov"
 
-_backends = {}
+_loaded_backends: dict = {}
+_type2backend: dict = {}
 _debug_importing = False
 
 
-def get_backend(tensor) -> 'AbstractBackend':
+def get_backend(tensor) -> "AbstractBackend":
     """
     Takes a correct backend (e.g. numpy backend if tensor is numpy.ndarray) for a tensor.
     If needed, imports package and creates backend
     """
-    for framework_name, backend in _backends.items():
+    _type = type(tensor)
+    _result = _type2backend.get(_type, None)
+    if _result is not None:
+        return _result
+
+    for framework_name, backend in list(_loaded_backends.items()):
         if backend.is_appropriate_type(tensor):
+            _type2backend[_type] = backend
             return backend
 
     # Find backend subclasses recursively
@@ -38,26 +44,28 @@ def get_backend(tensor) -> 'AbstractBackend':
 
     for BackendSubclass in backend_subclasses:
         if _debug_importing:
-            print('Testing for subclass of ', BackendSubclass)
-        if BackendSubclass.framework_name not in _backends:
+            print("Testing for subclass of ", BackendSubclass)
+        if BackendSubclass.framework_name not in _loaded_backends:
             # check that module was already imported. Otherwise it can't be imported
             if BackendSubclass.framework_name in sys.modules:
                 if _debug_importing:
-                    print('Imported backend for ', BackendSubclass.framework_name)
+                    print("Imported backend for ", BackendSubclass.framework_name)
                 backend = BackendSubclass()
-                _backends[backend.framework_name] = backend
+                _loaded_backends[backend.framework_name] = backend
                 if backend.is_appropriate_type(tensor):
+                    _type2backend[_type] = backend
                     return backend
 
-    raise RuntimeError('Tensor type unknown to einops {}'.format(type(tensor)))
+    raise RuntimeError("Tensor type unknown to einops {}".format(type(tensor)))
 
 
 class AbstractBackend:
-    """ Base backend class, major part of methods are only for debugging purposes. """
-    framework_name = None
+    """Base backend class, major part of methods are only for debugging purposes."""
+
+    framework_name: str
 
     def is_appropriate_type(self, tensor):
-        """ helper method should recognize tensors it can handle """
+        """helper method should recognize tensors it can handle"""
         raise NotImplementedError()
 
     def from_numpy(self, x):
@@ -103,7 +111,12 @@ class AbstractBackend:
         return self.tile(x, tuple(repeats))
 
     def tile(self, x, repeats):
-        """repeats is a number of  """
+        """repeats - same lengths as x.shape"""
+        raise NotImplementedError()
+
+    def concat(self, tensors, axis: int):
+        """concatenates tensors along axis.
+        Assume identical across tensors: devices, dtypes and shapes except selected axis."""
         raise NotImplementedError()
 
     def is_float_type(self, x):
@@ -117,9 +130,12 @@ class AbstractBackend:
     def __repr__(self):
         return "<einops backend for {}>".format(self.framework_name)
 
+    def einsum(self, pattern, *x):
+        raise NotImplementedError("backend does not support einsum")
+
 
 class UnknownSize:
-    """ pseudo-symbol for symbolic frameworks which do not provide symbols for shape elements """
+    """pseudo-symbol for symbolic frameworks which do not provide symbols for shape elements"""
 
     def __floordiv__(self, other):
         return self
@@ -134,14 +150,15 @@ class UnknownSize:
         return self
 
     def __hash__(self):
-        return None.__hash__()
+        return hash(None)
 
 
 class NumpyBackend(AbstractBackend):
-    framework_name = 'numpy'
+    framework_name = "numpy"
 
     def __init__(self):
         import numpy
+
         self.np = numpy
 
     def is_appropriate_type(self, tensor):
@@ -162,21 +179,28 @@ class NumpyBackend(AbstractBackend):
     def tile(self, x, repeats):
         return self.np.tile(x, repeats)
 
+    def concat(self, tensors, axis: int):
+        return self.np.concatenate(tensors, axis=axis)
+
     def is_float_type(self, x):
-        return x.dtype in ('float16', 'float32', 'float64', 'float128')
+        return x.dtype in ("float16", "float32", "float64", "float128", "bfloat16")
 
     def add_axis(self, x, new_position):
         return self.np.expand_dims(x, new_position)
 
+    def einsum(self, pattern, *x):
+        return self.np.einsum(pattern, *x)
+
 
 class JaxBackend(NumpyBackend):
-    framework_name = 'jax'
+    framework_name = "jax"
 
     def __init__(self):
         super(JaxBackend, self).__init__()
         self.onp = self.np
 
         import jax.numpy
+
         self.np = jax.numpy
 
     def from_numpy(self, x):
@@ -186,118 +210,15 @@ class JaxBackend(NumpyBackend):
         return self.onp.asarray(x)
 
 
-class GluonBackend(AbstractBackend):
-    framework_name = 'mxnet.ndarray'
-
-    def __init__(self):
-        import mxnet
-        self.mx = mxnet
-
-    def is_appropriate_type(self, tensor):
-        return isinstance(tensor, self.mx.nd.NDArray)
-
-    def from_numpy(self, x):
-        if len(x.shape) == 0:
-            x = x[None]  # poor support of scalars in mxnet, otherwise mxnet can't attach gradients
-        var = self.mx.nd.array(x, dtype=x.dtype)
-        var.attach_grad()
-        return var
-
-    def to_numpy(self, x):
-        return self.mx.nd.NDArray.asnumpy(x)
-
-    def reshape(self, x, shape):
-        if len(shape) == 0:
-            return x  # poor support of scalars in mxnet
-        return x.reshape(shape)
-
-    def arange(self, start, stop):
-        return self.mx.nd.arange(start, stop)
-
-    def stack_on_zeroth_dimension(self, tensors: list):
-        return self.mx.nd.stack(*tensors)
-
-    def tile(self, x, repeats):
-        return self.mx.nd.tile(x, repeats)
-
-    def add_axis(self, x, new_position):
-        return self.mx.nd.expand_dims(x, new_position)
-
-    def is_float_type(self, x):
-        return 'float' in str(x.dtype)
-
-    def layers(self):
-        from .layers import gluon
-        return gluon
-
-
-class MXNetBackend(AbstractBackend):
-    framework_name = 'mxnet.symbol'
-
-    def __init__(self):
-        import mxnet
-        self.mx = mxnet
-
-    def is_appropriate_type(self, tensor):
-        return isinstance(tensor, self.mx.symbol.Symbol)
-
-    def create_symbol(self, shape, dtype='float32'):
-        # mxnet accepts zeros as undefined dimensions
-        shape = tuple(0 if d is None else d for d in shape)
-        var = self.mx.symbol.Variable('input', shape=shape, dtype=dtype)
-        return var
-
-    def eval_symbol(self, symbol, input_dict):
-        args = {var.name: self.mx.nd.array(val) for var, val in input_dict}
-        ex = symbol.bind(ctx=self.mx.cpu(), args=args)
-        ex.forward()
-        return ex.outputs[0].asnumpy()
-
-    def shape(self, x):
-        # mxnet has problems with shape inference - it does not provide shape symbols
-        # shape_array seems to be impossible to use in shape inference
-        # infer_shape_partial returns empty tuple if was not able to infer shape
-        # reductions such as sum can't return scalars, but return 1-element vectors
-        shape = x.infer_shape_partial()[1][0]
-        if len(shape) == 0:
-            warnings.warn('mxnet inferred shape to be (), which probably means it could not be inferred')
-        shape = tuple(UnknownSize() if d == 0 else d for d in shape)
-        return shape
-
-    def reshape(self, x, shape):
-        if len(shape) == 0:
-            return x  # poor support of scalars in mxnet
-        if any(isinstance(dimension, UnknownSize) for dimension in shape):
-            from einops import EinopsError
-            raise EinopsError("Mxnet couldn't infer all dimensions statically, please provide those with axes_lengths")
-        return x.reshape(shape)
-
-    def arange(self, start, stop):
-        return self.mx.symbol.arange(start, stop)
-
-    def stack_on_zeroth_dimension(self, tensors: list):
-        return self.mx.symbol.stack(*tensors)
-
-    def tile(self, x, repeats):
-        return self.mx.symbol.tile(x, repeats)
-
-    def add_axis(self, x, new_position):
-        return self.mx.symbol.expand_dims(x, new_position)
-
-    def is_float_type(self, x):
-        return 'float' in str(x.infer_type()[1][0])
-
-    def layers(self):
-        from .layers import gluon
-        return gluon
-
-
 class TorchBackend(AbstractBackend):
-    framework_name = 'torch'
+    framework_name = "torch"
 
     def __init__(self):
         import torch
+
         self.torch = torch
+        # importing would register operations in torch._dynamo for torch.compile
+        from . import _torch_specific  # noqa
 
     def is_appropriate_type(self, tensor):
         return isinstance(tensor, self.torch.Tensor)
@@ -316,16 +237,21 @@ class TorchBackend(AbstractBackend):
         return self.torch.arange(start, stop, dtype=self.torch.int64)
 
     def reduce(self, x, operation, reduced_axes):
-        for axis in sorted(reduced_axes, reverse=True):
-            if operation == 'min':
-                x, _ = x.min(dim=axis)
-            elif operation == 'max':
-                x, _ = x.max(dim=axis)
-            elif operation in ['sum', 'mean', 'prod']:
-                x = getattr(x, operation)(dim=axis)
-            else:
-                raise NotImplementedError('Unknown reduction ', operation)
-        return x
+        if operation == "min":
+            return x.amin(dim=reduced_axes)
+        elif operation == "max":
+            return x.amax(dim=reduced_axes)
+        elif operation == "sum":
+            return x.sum(dim=reduced_axes)
+        elif operation == "mean":
+            return x.mean(dim=reduced_axes)
+        elif operation in ("any", "all", "prod"):
+            # pytorch supports reducing only one operation at a time
+            for i in list(sorted(reduced_axes))[::-1]:
+                x = getattr(x, operation)(dim=i)
+            return x
+        else:
+            raise NotImplementedError("Unknown reduction ", operation)
 
     def transpose(self, x, axes):
         return x.permute(axes)
@@ -333,25 +259,40 @@ class TorchBackend(AbstractBackend):
     def stack_on_zeroth_dimension(self, tensors: list):
         return self.torch.stack(tensors)
 
+    def add_axes(self, x, n_axes, pos2len):
+        repeats = [-1] * n_axes
+        for axis_position, axis_length in pos2len.items():
+            x = self.add_axis(x, axis_position)
+            repeats[axis_position] = axis_length
+        return x.expand(repeats)
+
     def tile(self, x, repeats):
         return x.repeat(repeats)
+
+    def concat(self, tensors, axis: int):
+        return self.torch.cat(tensors, dim=axis)
 
     def add_axis(self, x, new_position):
         return self.torch.unsqueeze(x, new_position)
 
     def is_float_type(self, x):
-        return x.dtype in [self.torch.float16, self.torch.float32, self.torch.float64]
+        return x.dtype in [self.torch.float16, self.torch.float32, self.torch.float64, self.torch.bfloat16]
 
     def layers(self):
         from .layers import torch
+
         return torch
+
+    def einsum(self, pattern, *x):
+        return self.torch.einsum(pattern, *x)
 
 
 class CupyBackend(AbstractBackend):
-    framework_name = 'cupy'
+    framework_name = "cupy"
 
     def __init__(self):
         import cupy
+
         self.cupy = cupy
 
     def is_appropriate_type(self, tensor):
@@ -372,19 +313,26 @@ class CupyBackend(AbstractBackend):
     def tile(self, x, repeats):
         return self.cupy.tile(x, repeats)
 
+    def concat(self, tensors, axis: int):
+        return self.cupy.concatenate(tensors, axis=axis)
+
     def add_axis(self, x, new_position):
         return self.cupy.expand_dims(x, new_position)
 
     def is_float_type(self, x):
-        return x.dtype in ('float16', 'float32', 'float64', 'float128')
+        return x.dtype in ("float16", "float32", "float64", "float128", "bfloat16")
+
+    def einsum(self, pattern, *x):
+        return self.cupy.einsum(pattern, *x)
 
 
 class ChainerBackend(AbstractBackend):
-    framework_name = 'chainer'
+    framework_name = "chainer"
 
     def __init__(self):
         import chainer
         import numpy
+
         self.numpy = numpy
         self.chainer = chainer
 
@@ -392,7 +340,7 @@ class ChainerBackend(AbstractBackend):
         return isinstance(tensor, self.chainer.Variable)
 
     def from_numpy(self, x):
-        return self.chainer.Variable(x.astype('float32'))
+        return self.chainer.Variable(x.astype("float32"))
 
     def to_numpy(self, x):
         if isinstance(x, self.chainer.Variable):
@@ -411,15 +359,22 @@ class ChainerBackend(AbstractBackend):
     def tile(self, x, repeats):
         return self.chainer.functions.tile(x, repeats)
 
+    def concat(self, tensors, axis: int):
+        return self.chainer.functions.concat(tensors, axis=axis)
+
     def add_axis(self, x, new_position):
         return self.chainer.functions.expand_dims(x, new_position)
 
     def is_float_type(self, x):
-        return x.dtype in ('float16', 'float32', 'float64', 'float128')
+        return x.dtype in ("float16", "float32", "float64", "float128", "bfloat16")
 
     def layers(self):
         from .layers import chainer
+
         return chainer
+
+    def einsum(self, pattern, *x):
+        return self.chainer.functions.einsum(pattern, *x)
 
 
 class HashableTuple:
@@ -438,12 +393,15 @@ class HashableTuple:
     def __getitem__(self, item):
         return self.elements[item]
 
+    # default equality and hash is used (True only with itself, hash taken of id)
+
 
 class TensorflowBackend(AbstractBackend):
-    framework_name = 'tensorflow'
+    framework_name = "tensorflow"
 
     def __init__(self):
         import tensorflow
+
         self.tf = tensorflow
 
     def is_appropriate_type(self, tensor):
@@ -471,12 +429,12 @@ class TensorflowBackend(AbstractBackend):
             try:
                 hash(shape)
                 return shape
-            except:
+            except BaseException:
                 # unhashable symbols in shape. Wrap tuple to be hashable.
                 return HashableTuple(shape)
 
     def reduce(self, x, operation, axes):
-        return getattr(self.tf, 'reduce_' + operation)(x, axis=axes)
+        return getattr(self.tf, "reduce_" + operation)(x, axis=axes)
 
     def reshape(self, x, shape):
         return self.tf.reshape(x, shape)
@@ -490,22 +448,30 @@ class TensorflowBackend(AbstractBackend):
     def tile(self, x, repeats):
         return self.tf.tile(x, repeats)
 
+    def concat(self, tensors, axis: int):
+        return self.tf.concat(tensors, axis=axis)
+
     def add_axis(self, x, new_position):
         return self.tf.expand_dims(x, new_position)
 
     def is_float_type(self, x):
-        return x.dtype in ('float16', 'float32', 'float64', 'float128')
+        return x.dtype in ("float16", "float32", "float64", "float128", "bfloat16")
 
     def layers(self):
         from .layers import tensorflow
+
         return tensorflow
 
+    def einsum(self, pattern, *x):
+        return self.tf.einsum(pattern, *x)
 
-class KerasBackend(AbstractBackend):
-    framework_name = 'tensorflow.keras'
+
+class TFKerasBackend(AbstractBackend):
+    framework_name = "tensorflow.keras"
 
     def __init__(self):
         import tensorflow as tf
+
         self.tf = tf
         self.keras = tf.keras
         self.K = tf.keras.backend
@@ -517,9 +483,8 @@ class KerasBackend(AbstractBackend):
         return self.keras.Input(batch_shape=shape)
 
     def eval_symbol(self, symbol, input_dict):
-        (variable, value), = input_dict
-        model = self.keras.models.Model(variable, symbol)
-        return model.predict_on_batch(value)
+        model = self.keras.models.Model([var for (var, _) in input_dict], symbol)
+        return model.predict_on_batch([val for (_, val) in input_dict])
 
     def arange(self, start, stop):
         return self.K.arange(start, stop)
@@ -543,12 +508,208 @@ class KerasBackend(AbstractBackend):
     def tile(self, x, repeats):
         return self.K.tile(x, repeats)
 
+    def concat(self, tensors, axis: int):
+        return self.K.concatenate(tensors, axis=axis)
+
     def add_axis(self, x, new_position):
         return self.K.expand_dims(x, new_position)
 
     def is_float_type(self, x):
-        return 'float' in self.K.dtype(x)
+        return "float" in self.K.dtype(x)
 
     def layers(self):
         from .layers import keras
+
         return keras
+
+
+class OneFlowBackend(AbstractBackend):
+    framework_name = "oneflow"
+
+    def __init__(self):
+        import oneflow as flow
+
+        self.flow = flow
+
+    def is_appropriate_type(self, tensor):
+        return isinstance(tensor, self.flow.Tensor)
+
+    def from_numpy(self, x):
+        variable = self.flow.from_numpy(x)
+        if self.is_float_type(variable):
+            # attach grad only to floating types
+            variable.requires_grad = True
+        return variable
+
+    def to_numpy(self, x):
+        return x.detach().cpu().numpy()
+
+    def arange(self, start, stop):
+        return self.flow.arange(start, stop, dtype=self.flow.int64)
+
+    def reduce(self, x, operation, reduced_axes):
+        for axis in sorted(reduced_axes, reverse=True):
+            if operation == "min":
+                x, _ = x.min(dim=axis)
+            elif operation == "max":
+                x, _ = x.max(dim=axis)
+            elif operation in ["sum", "mean", "prod", "any", "all"]:
+                x = getattr(x, operation)(dim=axis)
+            else:
+                raise NotImplementedError("Unknown reduction ", operation)
+        return x
+
+    def transpose(self, x, axes):
+        return x.permute(axes)
+
+    def stack_on_zeroth_dimension(self, tensors: list):
+        return self.flow.stack(tensors)
+
+    def add_axes(self, x, n_axes, pos2len):
+        repeats = [-1] * n_axes
+        for axis_position, axis_length in pos2len.items():
+            x = self.add_axis(x, axis_position)
+            repeats[axis_position] = axis_length
+        return x.expand(*repeats)
+
+    def tile(self, x, repeats):
+        return x.repeat(repeats)
+
+    def concat(self, tensors, axis: int):
+        return self.flow.concat(tensors, dim=axis)
+
+    def add_axis(self, x, new_position):
+        return self.flow.unsqueeze(x, new_position)
+
+    def is_float_type(self, x):
+        return x.dtype in [self.flow.float16, self.flow.float32, self.flow.float64]
+
+    def layers(self):
+        from .layers import oneflow
+
+        return oneflow
+
+    def einsum(self, pattern, *x):
+        return self.flow.einsum(pattern, *x)
+
+
+class PaddleBackend(AbstractBackend):
+    framework_name = "paddle"
+
+    def __init__(self):
+        import paddle
+
+        self.paddle = paddle
+
+    def is_appropriate_type(self, tensor):
+        return isinstance(tensor, (self.paddle.Tensor, self.paddle.static.Variable))
+
+    def from_numpy(self, x):
+        tensor = self.paddle.to_tensor(x)
+        tensor.stop_gradient = False
+        return tensor
+
+    def to_numpy(self, x):
+        return x.detach().numpy()
+
+    def arange(self, start, stop):
+        return self.paddle.arange(start, stop, dtype=self.paddle.int64)
+
+    def reduce(self, x, operation, axes):
+        if len(axes) == x.ndim:
+            # currently paddle returns 1d tensor instead of 0d
+            return super().reduce(x, operation, axes).squeeze(0)
+        else:
+            return super().reduce(x, operation, axes)
+
+    def transpose(self, x, axes):
+        return x.transpose(axes)
+
+    def add_axes(self, x, n_axes, pos2len):
+        repeats = [-1] * n_axes
+        for axis_position, axis_length in pos2len.items():
+            x = self.add_axis(x, axis_position)
+            repeats[axis_position] = axis_length
+        return x.expand(repeats)
+
+    def stack_on_zeroth_dimension(self, tensors: list):
+        return self.paddle.stack(tensors)
+
+    def reshape(self, x, shape):
+        return x.reshape(shape)
+
+    def tile(self, x, repeats):
+        return x.tile(repeats)
+
+    def concat(self, tensors, axis: int):
+        return self.paddle.concat(tensors, axis=axis)
+
+    def add_axis(self, x, new_position):
+        return x.unsqueeze(new_position)
+
+    def is_float_type(self, x):
+        return x.dtype in [self.paddle.float16, self.paddle.float32, self.paddle.float64]
+
+    def layers(self):
+        from .layers import paddle
+
+        return paddle
+
+    def einsum(self, pattern, *x):
+        return self.paddle.einsum(pattern, *x)
+
+    def shape(self, x):
+        return tuple(x.shape)
+
+
+class TinygradBackend(AbstractBackend):
+    framework_name = "tinygrad"
+
+    def __init__(self):
+        import tinygrad
+
+        self.tinygrad = tinygrad
+
+    def is_appropriate_type(self, tensor):
+        return isinstance(tensor, self.tinygrad.Tensor)
+
+    def from_numpy(self, x):
+        return self.tinygrad.Tensor(x)
+
+    def to_numpy(self, x):
+        return x.numpy()
+
+    def arange(self, start, stop):
+        return self.tinygrad.Tensor.arange(start, stop)
+
+    def shape(self, x):
+        return x.shape
+
+    def reshape(self, x, shape):
+        return x.reshape(shape)
+
+    def transpose(self, x, axes):
+        return x.permute(axes)
+
+    def reduce(self, x, operation, axes):
+        for axis in sorted(axes, reverse=True):
+            x = getattr(x, operation)(axis=axis)
+        return x
+
+    def stack_on_zeroth_dimension(self, tensors: list):
+        return self.tinygrad.Tensor.stack(tensors)
+
+    def add_axis(self, x, new_position):
+        return x.unsqueeze(new_position)
+
+    def tile(self, x, repeats):
+        return x.repeat(repeats)
+
+    def concat(self, tensors, axis: int):
+        return tensors[0].cat(*tensors[1:], dim=axis) if len(tensors) > 1 else tensors[0]
+
+    def is_float_type(self, x):
+        return self.tinygrad.dtypes.is_float(x.dtype)
+
+    def einsum(self, pattern, *x):
+        return self.tinygrad.Tensor.einsum(pattern, *x)

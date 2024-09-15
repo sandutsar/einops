@@ -1,7 +1,5 @@
-<!-- this link magically rendered as video, unfortunately not in docs -->
 
-<!-- https://user-images.githubusercontent.com/6318811/116849688-0ca41c00-aba4-11eb-8ccf-74744f6cbc23.mp4 -->
-
+<!--
 <a href='http://arogozhnikov.github.io/images/einops/einops_video.mp4' >
 <div align="center">
   <img src="http://arogozhnikov.github.io/images/einops/einops_video.gif" alt="einops package examples" />
@@ -10,6 +8,14 @@
   <br><br>
 </div>
 </a>
+-->
+
+<!-- this link magically rendered as video, unfortunately not in docs -->
+
+https://user-images.githubusercontent.com/6318811/177030658-66f0eb5d-e136-44d8-99c9-86ae298ead5b.mp4
+
+
+
 
 # einops 
 [![Run tests](https://github.com/arogozhnikov/einops/actions/workflows/run_tests.yml/badge.svg)](https://github.com/arogozhnikov/einops/actions/workflows/run_tests.yml)
@@ -18,13 +24,27 @@
 ![Supported python versions](https://raw.githubusercontent.com/arogozhnikov/einops/master/docs/resources/python_badge.svg)
 
 
-Flexible and powerful tensor operations for readable and reliable code. 
+Flexible and powerful tensor operations for readable and reliable code. <br />
 Supports numpy, pytorch, tensorflow, jax, and [others](#supported-frameworks).
 
 ## Recent updates:
 
+- 0.8.0: tinygrad backend added, small fixes
+- 0.7.0: no-hassle `torch.compile`, support of [array api standard](https://data-apis.org/array-api/latest/API_specification/index.html) and more
+- 10'000🎉: github reports that more than 10k project use einops
+- einops 0.6.1: paddle backend added
+- einops 0.6 introduces [packing and unpacking](https://github.com/arogozhnikov/einops/blob/master/docs/4-pack-and-unpack.ipynb)
+- einops 0.5: einsum is now a part of einops
+- [Einops paper](https://openreview.net/pdf?id=oapKSVM2bcj) is accepted for oral presentation at ICLR 2022 (yes, it worth reading).
+  Talk recordings are [available](https://iclr.cc/virtual/2022/oral/6603)
+
+
+<details markdown="1">
+<summary>Previous updates</summary>
+- flax and oneflow backend added
 - torch.jit.script is supported for pytorch layers
 - powerful EinMix added to einops. [Einmix tutorial notebook](https://github.com/arogozhnikov/einops/blob/master/docs/3-einmix-layer.ipynb) 
+</details>
 
 <!--<div align="center">
   <img src="http://arogozhnikov.github.io/images/einops/einops_logo_350x350.png" 
@@ -32,18 +52,29 @@ Supports numpy, pytorch, tensorflow, jax, and [others](#supported-frameworks).
   <br><br>
 </div> -->
 
+
 ## Tweets 
 
 > In case you need convincing arguments for setting aside time to learn about einsum and einops...
-[Tim Rocktäschel, FAIR](https://twitter.com/_rockt/status/1230818967205425152)
+[Tim Rocktäschel](https://twitter.com/_rockt/status/1230818967205425152)
 
 > Writing better code with PyTorch and einops 👌
-[Andrej Karpathy, AI at Tesla](https://twitter.com/karpathy/status/1290826075916779520)
+[Andrej Karpathy](https://twitter.com/karpathy/status/1290826075916779520)
 
 > Slowly but surely, einops is seeping in to every nook and cranny of my code. If you find yourself shuffling around bazillion dimensional tensors, this might change your life
-[Nasim Rahaman, MILA (Montreal)](https://twitter.com/nasim_rahaman/status/1216022614755463169)
+[Nasim Rahaman](https://twitter.com/nasim_rahaman/status/1216022614755463169)
 
 [More testimonials](https://einops.rocks/pages/testimonials/)
+
+<!--
+## Recordings of talk at ICLR 2022
+
+<a href='https://iclr.cc/virtual/2022/oral/6603'>
+<img width="922" alt="Screen Shot 2022-07-03 at 1 00 15 AM" src="https://user-images.githubusercontent.com/6318811/177030789-89d349bf-ef75-4af5-a71f-609896d1c8d9.png">
+</a>
+
+Watch [a 15-minute talk](https://iclr.cc/virtual/2022/oral/6603) focused on main problems of standard tensor manipulation methods, and how einops improves this process.
+-->
 
 ## Contents
 
@@ -51,9 +82,9 @@ Supports numpy, pytorch, tensorflow, jax, and [others](#supported-frameworks).
 - [Documentation](https://einops.rocks/)
 - [Tutorial](#Tutorials) 
 - [API micro-reference](#API)
-- [Why using einops](#Why-using-einops-notation)
+- [Why use einops](#Why-use-einops-notation)
 - [Supported frameworks](#Supported-frameworks)
-- [Contributing](#Contributing)
+- [Citing](#Citing)
 - [Repository](https://github.com/arogozhnikov/einops) and [discussions](https://github.com/arogozhnikov/einops/discussions)
 
 ## Installation  <a name="Installation"></a>
@@ -78,14 +109,16 @@ Tutorials are the most convenient way to see `einops` in action
 
 - part 1: [einops fundamentals](https://github.com/arogozhnikov/einops/blob/master/docs/1-einops-basics.ipynb) 
 - part 2: [einops for deep learning](https://github.com/arogozhnikov/einops/blob/master/docs/2-einops-for-deep-learning.ipynb)
-- part 3: [improve pytorch code with einops](https://arogozhnikov.github.io/einops/pytorch-examples.html)   
+- part 3: [packing and unpacking](https://github.com/arogozhnikov/einops/blob/master/docs/4-pack-and-unpack.ipynb)
+- part 4: [improve pytorch code with einops](http://einops.rocks/pytorch-examples.html)   
 
+Kapil Sachdeva recorded a small [intro to einops](https://www.youtube.com/watch?v=xGy75Pjsqzo).
 
 ## API <a name="API"></a>
 
 `einops` has a minimalistic yet powerful API.
 
-Three operations provided ([einops tutorial](https://github.com/arogozhnikov/einops/blob/master/docs/) 
+Three core operations provided ([einops tutorial](https://github.com/arogozhnikov/einops/blob/master/docs/) 
 shows those cover stacking, reshape, transposition, squeeze/unsqueeze, repeat, tile, concatenate, view and numerous reductions)
 
 ```python
@@ -94,42 +127,58 @@ from einops import rearrange, reduce, repeat
 output_tensor = rearrange(input_tensor, 't b c -> b c t')
 # combine rearrangement and reduction
 output_tensor = reduce(input_tensor, 'b c (h h2) (w w2) -> b h w c', 'mean', h2=2, w2=2)
-# copy along a new axis 
+# copy along a new axis
 output_tensor = repeat(input_tensor, 'h w -> h w c', c=3)
 ```
-And two corresponding layers (`einops` keeps a separate version for each framework) with the same API.
+
+Later additions to the family are `pack` and `unpack` functions (better than stack/split/concatenate):
 
 ```python
-from einops.layers.chainer import Rearrange, Reduce
-from einops.layers.gluon import Rearrange, Reduce
-from einops.layers.keras import Rearrange, Reduce
-from einops.layers.torch import Rearrange, Reduce
+from einops import pack, unpack
+# pack and unpack allow reversibly 'packing' multiple tensors into one.
+# Packed tensors may be of different dimensionality:
+packed,  ps = pack([class_token_bc, image_tokens_bhwc, text_tokens_btc], 'b * c')
+class_emb_bc, image_emb_bhwc, text_emb_btc = unpack(transformer(packed), ps, 'b * c')
+```
+
+Finally, einops provides einsum with a support of multi-lettered names: 
+
+```python
+from einops import einsum, pack, unpack
+# einsum is like ... einsum, generic and flexible dot-product 
+# but 1) axes can be multi-lettered  2) pattern goes last 3) works with multiple frameworks
+C = einsum(A, B, 'b t1 head c, b t2 head c -> b head t1 t2')
+```
+
+### EinMix
+
+`EinMix` is a generic linear layer, perfect for MLP Mixers and similar architectures.
+
+### Layers
+
+Einops provides layers (`einops` keeps a separate version for each framework) that reflect corresponding functions
+
+```python
+from einops.layers.torch      import Rearrange, Reduce
 from einops.layers.tensorflow import Rearrange, Reduce
+from einops.layers.flax       import Rearrange, Reduce
+from einops.layers.paddle     import Rearrange, Reduce
+from einops.layers.chainer    import Rearrange, Reduce
 ```
 
-Layers behave similarly to operations and have the same parameters 
-(with the exception of the first argument, which is passed during call)
+<details markdown="1">
+<summary>Example of using layers within a pytorch model</summary>
+Example given for pytorch, but code in other frameworks is almost identical
 
-```python
-layer = Rearrange(pattern, **axes_lengths)
-layer = Reduce(pattern, reduction, **axes_lengths)
-
-# apply created layer to a tensor / variable
-x = layer(x)
-```
-
-Example of using layers within a model:
-```python
-# example given for pytorch, but code in other frameworks is almost identical  
+```python 
 from torch.nn import Sequential, Conv2d, MaxPool2d, Linear, ReLU
 from einops.layers.torch import Rearrange
 
 model = Sequential(
-    Conv2d(3, 6, kernel_size=5),
-    MaxPool2d(kernel_size=2),
+    ...,
     Conv2d(6, 16, kernel_size=5),
     MaxPool2d(kernel_size=2),
-    # flattening
+    # flattening without need to write forward
     Rearrange('b c h w -> b (c h w)'),  
     Linear(16*5*5, 120), 
     ReLU(),
@@ -137,16 +186,13 @@ model = Sequential(
 )
 ```
 
-<!---
-Additionally two auxiliary functions provided
-```python
-from einops import asnumpy, parse_shape
-# einops.asnumpy converts tensors of imperative frameworks to numpy
-numpy_tensor = asnumpy(input_tensor)
-# einops.parse_shape gives a shape of axes of interest 
-parse_shape(input_tensor, 'batch _ h w') # e.g {'batch': 64, 'h': 128, 'w': 160}
-```
--->
+No more flatten needed! 
+
+Additionally, torch users will benefit from layers as those are script-able and compile-able.
+</details>
+
+
+
 
 ## Naming <a name="Naming"></a>
 
@@ -155,7 +201,7 @@ parse_shape(input_tensor, 'batch _ h w') # e.g {'batch': 64, 'h': 128, 'w': 160}
 
 Notation was loosely inspired by Einstein summation (in particular by `numpy.einsum` operation).
 
-## Why use `einops` notation?! <a name="Why-using-einops-notation"></a>
+## Why use `einops` notation?! <a name="Why-use-einops-notation"></a>
 
 
 ### Semantic information (being verbose in expectations)
@@ -189,9 +235,7 @@ y = rearrange(x, 'b c h w -> b (c h w)')
 ```
 The second line checks that the input has four dimensions, 
 but you can also specify particular dimensions. 
-That's opposed to just writing comments about shapes since 
-[comments don't work and don't prevent mistakes](https://medium.freecodecamp.org/code-comments-the-good-the-bad-and-the-ugly-be9cc65fbf83)
-as we know   
+That's opposed to just writing comments about shapes since comments don't prevent mistakes, not tested, and without code review tend to be outdated   
 ```python
 y = x.view(x.shape[0], -1) # x: (batch, 256, 19, 19)
 y = rearrange(x, 'b c h w -> b (c h w)', c=256, h=19, w=19)
@@ -238,8 +282,8 @@ y = x.flatten() # or flatten(x)
 
 Suppose `x`'s shape was `(3, 4, 5)`, then `y` has shape ...
 
-- numpy, cupy, chainer, pytorch: `(60,)`
-- keras, tensorflow.layers, mxnet and gluon: `(3, 20)`
+- numpy, pytorch, cupy, chainer: `(60,)`
+- keras, tensorflow.layers, gluon: `(3, 20)`
 
 `einops` works the same way in all frameworks.
 
@@ -257,11 +301,11 @@ repeat(image, 'h w -> h (tile w)', tile=2)  # in numpy
 repeat(image, 'h w -> h (tile w)', tile=2)  # in pytorch
 repeat(image, 'h w -> h (tile w)', tile=2)  # in tf
 repeat(image, 'h w -> h (tile w)', tile=2)  # in jax
-repeat(image, 'h w -> h (tile w)', tile=2)  # in mxnet
+repeat(image, 'h w -> h (tile w)', tile=2)  # in cupy
 ... (etc.)
 ```
 
-Testimonials provide user's perspective on the same question. 
+[Testimonials](https://einops.rocks/pages/testimonials/) provide users' perspective on the same question. 
 
 ## Supported frameworks <a name="Supported-frameworks"></a>
 
@@ -273,21 +317,34 @@ Einops works with ...
 - [jax](https://github.com/google/jax)
 - [cupy](https://cupy.chainer.org/)
 - [chainer](https://chainer.org/)
-- [gluon](https://gluon.mxnet.io/)
 - [tf.keras](https://www.tensorflow.org/guide/keras)
-- [mxnet](https://mxnet.apache.org/) (experimental)
+- [flax](https://github.com/google/flax) (experimental)
+- [paddle](https://github.com/PaddlePaddle/Paddle) (experimental)
+- [oneflow](https://github.com/Oneflow-Inc/oneflow) (community)
+- [tinygrad](https://github.com/tinygrad/tinygrad) (community)
+
+Additionally, starting from einops 0.7.0 einops can be used with any framework that supports [Python array API standard](https://data-apis.org/array-api/latest/API_specification/index.html), which includes
+
+- numpy>=2.0
+- [MLX](https://github.com/ml-explore/mlx), after https://github.com/ml-explore/mlx/pull/1289
 
 
-## Contributing <a name="Contributing"></a>
+## Citing einops <a name="Citing"></a>
 
-Best ways to contribute are
+Please use the following bibtex record
 
-- spread the word about `einops`
-- if you like explaining things, more tutorials/tear-downs of implementations is welcome
-- tutorials in other languages are very welcome
-- do you have project/code example to share? Let me know in github discussions
-- use `einops` in your papers!
+```text
+@inproceedings{
+    rogozhnikov2022einops,
+    title={Einops: Clear and Reliable Tensor Manipulations with Einstein-like Notation},
+    author={Alex Rogozhnikov},
+    booktitle={International Conference on Learning Representations},
+    year={2022},
+    url={https://openreview.net/forum?id=oapKSVM2bcj}
+}
+```
+
 
 ## Supported python versions
 
-`einops` works with python 3.6 or later. 
+`einops` works with python 3.8 or later.
